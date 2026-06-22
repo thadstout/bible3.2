@@ -1,56 +1,194 @@
-const passages = [
-  { ref: '2 Timothy 3:16-17', text: 'All scripture is given by inspiration of God, and is profitable for doctrine, for reproof, for correction, for instruction in righteousness: That the man of God may be perfect, throughly furnished unto all good works.', tags: ['scripture', 'sufficiency', 'doctrine', 'correction'] },
-  { ref: 'Psalm 12:6', text: 'The words of the LORD are pure words: as silver tried in a furnace of earth, purified seven times.', tags: ['scripture', 'words', 'pure'] },
-  { ref: 'Hebrews 4:12', text: 'For the word of God is quick, and powerful, and sharper than any twoedged sword...', tags: ['scripture', 'word', 'discernment'] },
-  { ref: 'Galatians 1:8-9', text: 'But though we, or an angel from heaven, preach any other gospel unto you... let him be accursed.', tags: ['gospel', 'false gospel', 'works salvation'] },
-  { ref: 'Ephesians 2:8-10', text: 'For by grace are ye saved through faith; and that not of yourselves: it is the gift of God: Not of works...', tags: ['gospel', 'salvation', 'grace', 'faith', 'works'] },
-  { ref: 'Titus 3:5', text: 'Not by works of righteousness which we have done, but according to his mercy he saved us...', tags: ['gospel', 'salvation', 'works'] },
-  { ref: 'Romans 4:5', text: 'But to him that worketh not, but believeth on him that justifieth the ungodly...', tags: ['gospel', 'faith', 'works', 'justification'] },
-  { ref: '2 Corinthians 6:14-17', text: 'Be ye not unequally yoked together with unbelievers... wherefore come out from among them, and be ye separate...', tags: ['separation', 'unbeliever', 'fellowship'] },
-  { ref: '2 John 1:9-11', text: 'Whosoever transgresseth, and abideth not in the doctrine of Christ, hath not God... neither bid him God speed...', tags: ['separation', 'doctrine', 'christ', 'false teacher'] },
-  { ref: 'Romans 16:17', text: 'Mark them which cause divisions and offences contrary to the doctrine which ye have learned; and avoid them.', tags: ['separation', 'doctrine', 'avoid'] },
-  { ref: '2 Thessalonians 3:6', text: 'Withdraw yourselves from every brother that walketh disorderly, and not after the tradition which he received of us.', tags: ['separation', 'disorderly', 'withdraw'] },
-  { ref: '1 Corinthians 5:11', text: 'But now I have written unto you not to keep company, if any man that is called a brother be a fornicator...', tags: ['separation', 'sin', 'company'] },
-  { ref: 'Amos 3:3', text: 'Can two walk together, except they be agreed?', tags: ['agreement', 'fellowship', 'separation'] },
-  { ref: 'Ephesians 4:15', text: 'But speaking the truth in love, may grow up into him in all things, which is the head, even Christ:', tags: ['tone', 'truth', 'love'] },
-  { ref: 'Colossians 4:6', text: 'Let your speech be alway with grace, seasoned with salt...', tags: ['tone', 'speech', 'grace'] },
-  { ref: 'Matthew 10:16', text: 'Behold, I send you forth as sheep in the midst of wolves: be ye therefore wise as serpents, and harmless as doves.', tags: ['wisdom', 'tone', 'discernment'] },
-  { ref: '1 Thessalonians 5:21-22', text: 'Prove all things; hold fast that which is good. Abstain from all appearance of evil.', tags: ['discernment', 'prove', 'abstain'] },
-  { ref: '1 Corinthians 10:31', text: 'Whether therefore ye eat, or drink, or whatsoever ye do, do all to the glory of God.', tags: ['wisdom', 'glory', 'conduct'] },
-  { ref: '1 Corinthians 8:9', text: 'But take heed lest by any means this liberty of yours become a stumblingblock to them that are weak.', tags: ['liberty', 'stumblingblock', 'wisdom'] },
-  { ref: 'Romans 14:23', text: '...for whatsoever is not of faith is sin.', tags: ['conscience', 'faith', 'wisdom'] },
-  { ref: 'Genesis 2:24', text: 'Therefore shall a man leave his father and his mother, and shall cleave unto his wife...', tags: ['marriage', 'gender', 'family'] },
-  { ref: 'Mark 10:6-9', text: 'But from the beginning of the creation God made them male and female...', tags: ['marriage', 'gender', 'creation'] },
-  { ref: '1 Corinthians 6:18-20', text: 'Flee fornication... ye are bought with a price: therefore glorify God in your body...', tags: ['body', 'purity', 'sexual sin'] },
-  { ref: 'Romans 1:24-27', text: '...God gave them up unto vile affections...', tags: ['sexual sin', 'homosexuality', 'creation'] },
-  { ref: '1 Corinthians 6:9-11', text: '...such were some of you: but ye are washed, but ye are sanctified...', tags: ['sin', 'hope', 'washed', 'sexual sin'] },
-  { ref: 'John 14:6', text: 'Jesus saith unto him, I am the way, the truth, and the life...', tags: ['christ', 'salvation', 'truth'] },
-  { ref: 'Acts 4:12', text: 'Neither is there salvation in any other: for there is none other name under heaven given among men...', tags: ['christ', 'salvation', 'gospel'] },
-  { ref: '1 Corinthians 15:3-4', text: '...Christ died for our sins according to the scriptures; And that he was buried, and that he rose again...', tags: ['gospel', 'resurrection', 'christ'] },
-  { ref: 'John 3:16-18', text: 'For God so loved the world, that he gave his only begotten Son...', tags: ['gospel', 'believe', 'salvation'] },
-  { ref: 'James 1:5', text: 'If any of you lack wisdom, let him ask of God...', tags: ['wisdom', 'prayer'] }
-];
+const ntPassages = require('./ntBooks.js');
 
-const stopWords = new Set(['the','a','an','and','or','but','is','are','was','were','to','of','in','on','for','with','my','me','i','it','that','this','can','should','do','does','be','as','at','from','if','what','about','have','has']);
+const stopWords = new Set([
+  'the','a','an','and','or','but','is','are','was','were','to','of','in','on','for','with','my','me','i','it','that','this','can','should','do','does','be','as','at','from','if','what','about','have','has','had','will','would','could','there','their','they','them','his','her','him','he','she','we','us','you','your','our','not','so','then','than','into','unto','by','am'
+]);
+
+const synonymMap = {
+  salvation: ['saved','save','grace','faith','believe','gospel','justified','justification','redeemed','redemption','eternal','life'],
+  saved: ['salvation','save','grace','faith','believe','gospel','justified','justification'],
+  works: ['work','deeds','law','righteousness','boast','boasting','merit'],
+  baptism: ['baptize','baptized','baptizing','water'],
+  tongues: ['tongue','languages','interpretation','prophesy','spirit'],
+  separate: ['separation','withdraw','avoid','fellowship','company','yoked','partaker','doctrine'],
+  fellowship: ['company','partaker','yoked','communion','agreement','separate'],
+  doctrine: ['teaching','gospel','truth','word','commandment'],
+  false: ['deceive','deceiver','another','contrary','error','heresy'],
+  church: ['assembly','brethren','body','fellowship','doctrine'],
+  marriage: ['marry','wife','husband','fornication','adultery','one flesh'],
+  dating: ['marry','marriage','unbeliever','yoked','fornication'],
+  unbeliever: ['unbelieving','infidel','darkness','belial','yoked'],
+  sin: ['iniquity','transgression','unrighteousness','evil','flesh'],
+  sexual: ['fornication','adultery','uncleanness','lust','body'],
+  homosexual: ['effeminate','abusers','natural','unnatural','vile','affections'],
+  gender: ['male','female','creation','body'],
+  wisdom: ['wise','understanding','discern','prove','knowledge'],
+  music: ['song','sing','psalm','hymn','spiritual'],
+  prayer: ['pray','praying','request','supplication'],
+  forgive: ['forgiveness','forgiven','mercy','grace'],
+  anger: ['wrath','bitterness','malice','forgive'],
+  love: ['charity','beloved','brother','kindness'],
+  money: ['mammon','riches','covetousness','content','gain'],
+  alcohol: ['wine','drunkenness','sober'],
+  communion: ['supper','bread','cup','body','blood','remembrance'],
+  resurrection: ['risen','rise','raised','dead','life'],
+  gospel: ['christ','cross','death','buried','rose','resurrection','faith','believe']
+};
+
+const bookAliases = {
+  matthew: 'Matthew', matt: 'Matthew', mt: 'Matthew',
+  mark: 'Mark', mrk: 'Mark', mk: 'Mark',
+  luke: 'Luke', lk: 'Luke',
+  john: 'John', jn: 'John',
+  acts: 'Acts',
+  romans: 'Romans', rom: 'Romans',
+  '1corinthians': '1 Corinthians', '1cor': '1 Corinthians', '1co': '1 Corinthians', 'firstcorinthians': '1 Corinthians',
+  '2corinthians': '2 Corinthians', '2cor': '2 Corinthians', '2co': '2 Corinthians', 'secondcorinthians': '2 Corinthians',
+  galatians: 'Galatians', gal: 'Galatians',
+  ephesians: 'Ephesians', eph: 'Ephesians',
+  philippians: 'Philippians', phil: 'Philippians', php: 'Philippians',
+  colossians: 'Colossians', col: 'Colossians',
+  '1thessalonians': '1 Thessalonians', '1thess': '1 Thessalonians', '1th': '1 Thessalonians',
+  '2thessalonians': '2 Thessalonians', '2thess': '2 Thessalonians', '2th': '2 Thessalonians',
+  '1timothy': '1 Timothy', '1tim': '1 Timothy', '1ti': '1 Timothy',
+  '2timothy': '2 Timothy', '2tim': '2 Timothy', '2ti': '2 Timothy',
+  titus: 'Titus', philemon: 'Philemon', phm: 'Philemon',
+  hebrews: 'Hebrews', heb: 'Hebrews',
+  james: 'James', jas: 'James',
+  '1peter': '1 Peter', '1pet': '1 Peter', '1pe': '1 Peter',
+  '2peter': '2 Peter', '2pet': '2 Peter', '2pe': '2 Peter',
+  '1john': '1 John', '1jn': '1 John',
+  '2john': '2 John', '2jn': '2 John',
+  '3john': '3 John', '3jn': '3 John',
+  jude: 'Jude', revelation: 'Revelation', rev: 'Revelation'
+};
+
+function normalize(str) {
+  return String(str || '').toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+}
 
 function tokenize(input) {
-  return String(input || '').toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(w => w && !stopWords.has(w));
+  return normalize(input).split(' ').filter(w => w && !stopWords.has(w));
 }
 
-function searchBible(question, limit = 10) {
-  const words = tokenize(question);
-  const scored = passages.map(p => {
-    const haystack = `${p.ref} ${p.text} ${p.tags.join(' ')}`.toLowerCase();
-    let score = 0;
-    for (const word of words) {
-      if (haystack.includes(word)) score += 2;
-      for (const tag of p.tags) if (tag.includes(word) || word.includes(tag)) score += 3;
+function expandTerms(words) {
+  const terms = new Set(words);
+  for (const word of words) {
+    if (synonymMap[word]) synonymMap[word].forEach(t => terms.add(t));
+  }
+  return [...terms].filter(Boolean);
+}
+
+function parseReference(question) {
+  const q = String(question || '').toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9:\-\s]/g, ' ').replace(/\s+/g, ' ').trim();
+  const refMatch = q.match(/\b([1-3]?\s*[a-z]+)\s+(\d{1,3})(?::(\d{1,3})(?:\s*-\s*(\d{1,3}))?)?\b/);
+  if (!refMatch) return null;
+  const rawBook = refMatch[1].replace(/\s+/g, '');
+  const book = bookAliases[rawBook];
+  if (!book) return null;
+  return {
+    book,
+    chapter: Number(refMatch[2]),
+    verseStart: refMatch[3] ? Number(refMatch[3]) : null,
+    verseEnd: refMatch[4] ? Number(refMatch[4]) : null
+  };
+}
+
+function exactReferenceResults(ref, limit) {
+  let results = ntPassages.filter(p => p.book === ref.book && p.chapter === ref.chapter);
+  if (ref.verseStart) {
+    const end = ref.verseEnd || ref.verseStart;
+    results = results.filter(p => p.verse >= ref.verseStart && p.verse <= end);
+    results = addNearbyContext(results, 1);
+  }
+  return results.slice(0, limit);
+}
+
+function addNearbyContext(results, radius = 1) {
+  const wanted = new Set();
+  for (const p of results) {
+    for (let v = p.verse - radius; v <= p.verse + radius; v++) {
+      wanted.add(`${p.book}|${p.chapter}|${v}`);
     }
-    return { ...p, score };
-  }).filter(p => p.score > 0).sort((a, b) => b.score - a.score);
-
-  const fallback = passages.filter(p => ['scripture','gospel','separation','wisdom','tone'].some(t => p.tags.includes(t))).slice(0, limit);
-  return (scored.length ? scored : fallback).slice(0, limit).map(({ score, ...p }) => p);
+  }
+  const context = ntPassages.filter(p => wanted.has(`${p.book}|${p.chapter}|${p.verse}`));
+  return dedupe(context);
 }
 
-module.exports = { passages, searchBible };
+function dedupe(passages) {
+  const seen = new Set();
+  const out = [];
+  for (const p of passages) {
+    const key = p.ref;
+    if (!seen.has(key)) {
+      seen.add(key);
+      out.push(p);
+    }
+  }
+  return out;
+}
+
+function phraseScore(question, text) {
+  const q = normalize(question);
+  const phrases = [];
+  const quoted = [...String(question || '').matchAll(/[“"]([^”"]{3,})[”"]/g)].map(m => normalize(m[1]));
+  phrases.push(...quoted);
+  const importantPhrases = ['works salvation','saved by works','eternal life','false prophet','false teachers','another gospel','unequally yoked','not of works','communion','lords supper','body of christ','blood of christ','male and female','one flesh','fornication','love one another'];
+  phrases.push(...importantPhrases.filter(p => q.includes(p)));
+  let score = 0;
+  for (const phrase of phrases) {
+    if (phrase && text.includes(phrase)) score += 18;
+  }
+  return score;
+}
+
+function scorePassage(p, question, terms, originalWords) {
+  const text = normalize(`${p.ref} ${p.text}`);
+  let score = phraseScore(question, text);
+
+  for (const word of originalWords) {
+    if (text.includes(word)) score += 8;
+    if (p.book.toLowerCase().includes(word)) score += 4;
+  }
+  for (const term of terms) {
+    if (text.includes(term)) score += 3;
+  }
+
+  // Boost high-signal doctrinal passages when matching related questions.
+  const ref = p.ref;
+  const q = normalize(question);
+  if (/(works salvation|saved by works|earn salvation|works|grace|saved|salvation|gospel|faith|baptism)/.test(q) && /^(Romans 3:|Romans 4:|Romans 5:|Romans 10:|1 Corinthians 15:|Galatians 1:|Galatians 2:|Galatians 3:|Ephesians 2:|Titus 3:|Acts 4:|John 3:)/.test(ref)) score += 12;
+  if (/(works salvation|saved by works|earn salvation|not of works)/.test(q) && /^(Ephesians 2:8|Ephesians 2:9|Titus 3:5|Romans 4:5|Galatians 2:16|Galatians 1:8|Galatians 1:9)/.test(ref)) score += 30;
+  if (/(separate|separation|fellowship|unbeliever|false|doctrine|church|works salvation)/.test(q) && /^(2 Corinthians 6:|2 John 1:|Romans 16:|1 Corinthians 5:|2 Thessalonians 3:|1 Timothy 6:|Titus 3:|Ephesians 5:)/.test(ref)) score += 12;
+  if (/(marry|marriage|dating|fornication|adultery|sexual|body|homosexual|gender)/.test(q) && /^(Matthew 19:|Mark 10:|Romans 1:|1 Corinthians 6:|1 Corinthians 7:|Ephesians 5:|Hebrews 13:)/.test(ref)) score += 12;
+  if (/(communion|supper|bread|cup|remembrance|blood|body)/.test(q) && /^(Matthew 26:|Mark 14:|Luke 22:|1 Corinthians 10:|1 Corinthians 11:)/.test(ref)) score += 12;
+  if (/(song|sing|music|psalm|hymn)/.test(q) && /^(Ephesians 5:|Colossians 3:|James 5:|1 Corinthians 14:)/.test(ref)) score += 12;
+
+  return score;
+}
+
+function searchBible(question, limit = 25) {
+  const ref = parseReference(question);
+  if (ref) {
+    const exact = exactReferenceResults(ref, limit);
+    if (exact.length) return exact;
+  }
+
+  const originalWords = tokenize(question);
+  const terms = expandTerms(originalWords);
+  const scored = ntPassages.map(p => ({ ...p, score: scorePassage(p, question, terms, originalWords) }))
+    .filter(p => p.score > 0)
+    .sort((a, b) => b.score - a.score || a.book.localeCompare(b.book) || a.chapter - b.chapter || a.verse - b.verse);
+
+  const top = scored.slice(0, Math.max(limit, 12));
+  const withContext = addNearbyContext(top.slice(0, Math.ceil(limit / 2)), 1);
+  const combined = dedupe([...top, ...withContext]);
+
+  const fallbackRefs = new Set([
+    '2 Timothy 3:16','2 Timothy 3:17','Hebrews 4:12','John 3:16','John 3:17','John 3:18','Acts 4:12','1 Corinthians 15:3','1 Corinthians 15:4','Ephesians 2:8','Ephesians 2:9','Ephesians 2:10','2 Corinthians 6:14','2 Corinthians 6:15','2 Corinthians 6:16','2 Corinthians 6:17','Romans 16:17','Colossians 4:6'
+  ]);
+  const fallback = ntPassages.filter(p => fallbackRefs.has(p.ref));
+  return (combined.length ? combined : fallback).slice(0, limit).map(({ score, ...p }) => p);
+}
+
+module.exports = { passages: ntPassages, searchBible, tokenize, expandTerms, parseReference };

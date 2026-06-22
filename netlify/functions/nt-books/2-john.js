@@ -1,0 +1,93 @@
+module.exports = [
+  {
+    "ref": "2 John 1:1",
+    "book": "2 John",
+    "chapter": 1,
+    "verse": 1,
+    "text": "The elder unto the elect lady and her children, whom I love in the truth; and not I only, but also all they that have known the truth;"
+  },
+  {
+    "ref": "2 John 1:2",
+    "book": "2 John",
+    "chapter": 1,
+    "verse": 2,
+    "text": "For the truth’s sake, which dwelleth in us, and shall be with us for ever."
+  },
+  {
+    "ref": "2 John 1:3",
+    "book": "2 John",
+    "chapter": 1,
+    "verse": 3,
+    "text": "Grace be with you, mercy, and peace, from God the Father, and from the Lord Jesus Christ, the Son of the Father, in truth and love."
+  },
+  {
+    "ref": "2 John 1:4",
+    "book": "2 John",
+    "chapter": 1,
+    "verse": 4,
+    "text": "I rejoiced greatly that I found of thy children walking in truth, as we have received a commandment from the Father."
+  },
+  {
+    "ref": "2 John 1:5",
+    "book": "2 John",
+    "chapter": 1,
+    "verse": 5,
+    "text": "And now I beseech thee, lady, not as though I wrote a new commandment unto thee, but that which we had from the beginning, that we love one another."
+  },
+  {
+    "ref": "2 John 1:6",
+    "book": "2 John",
+    "chapter": 1,
+    "verse": 6,
+    "text": "And this is love, that we walk after his commandments. This is the commandment, That, as ye have heard from the beginning, ye should walk in it."
+  },
+  {
+    "ref": "2 John 1:7",
+    "book": "2 John",
+    "chapter": 1,
+    "verse": 7,
+    "text": "For many deceivers are entered into the world, who confess not that Jesus Christ is come in the flesh. This is a deceiver and an antichrist."
+  },
+  {
+    "ref": "2 John 1:8",
+    "book": "2 John",
+    "chapter": 1,
+    "verse": 8,
+    "text": "Look to yourselves, that we lose not those things which we have wrought, but that we receive a full reward."
+  },
+  {
+    "ref": "2 John 1:9",
+    "book": "2 John",
+    "chapter": 1,
+    "verse": 9,
+    "text": "Whosoever transgresseth, and abideth not in the doctrine of Christ, hath not God. He that abideth in the doctrine of Christ, he hath both the Father and the Son."
+  },
+  {
+    "ref": "2 John 1:10",
+    "book": "2 John",
+    "chapter": 1,
+    "verse": 10,
+    "text": "If there come any unto you, and bring not this doctrine, receive him not into your house, neither bid him God speed:"
+  },
+  {
+    "ref": "2 John 1:11",
+    "book": "2 John",
+    "chapter": 1,
+    "verse": 11,
+    "text": "For he that biddeth him God speed is partaker of his evil deeds."
+  },
+  {
+    "ref": "2 John 1:12",
+    "book": "2 John",
+    "chapter": 1,
+    "verse": 12,
+    "text": "Having many things to write unto you, I would not write with paper and ink: but I trust to come unto you, and speak face to face, that our joy may be full."
+  },
+  {
+    "ref": "2 John 1:13",
+    "book": "2 John",
+    "chapter": 1,
+    "verse": 13,
+    "text": "The children of thy elect sister greet thee. Amen."
+  }
+];

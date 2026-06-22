@@ -1,7 +1,7 @@
 {
-  "name": "bible-answers-3-1",
-  "version": "3.1.0",
-  "description": "Bible Answers App 3.1 - KJV Scripture-restricted Netlify app",
+  "name": "bible-answers-3-2",
+  "version": "3.2.0",
+  "description": "Bible Answers App 3.2 - KJV Scripture-restricted Netlify app",
   "main": "index.html",
   "scripts": {
     "build": "echo 'Static site ready'",

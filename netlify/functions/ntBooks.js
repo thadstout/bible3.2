@@ -1,0 +1,31 @@
+const books = [
+  ...require('./nt-books/matthew.js'),
+  ...require('./nt-books/mark.js'),
+  ...require('./nt-books/luke.js'),
+  ...require('./nt-books/john.js'),
+  ...require('./nt-books/acts.js'),
+  ...require('./nt-books/romans.js'),
+  ...require('./nt-books/1-corinthians.js'),
+  ...require('./nt-books/2-corinthians.js'),
+  ...require('./nt-books/galatians.js'),
+  ...require('./nt-books/ephesians.js'),
+  ...require('./nt-books/philippians.js'),
+  ...require('./nt-books/colossians.js'),
+  ...require('./nt-books/1-thessalonians.js'),
+  ...require('./nt-books/2-thessalonians.js'),
+  ...require('./nt-books/1-timothy.js'),
+  ...require('./nt-books/2-timothy.js'),
+  ...require('./nt-books/titus.js'),
+  ...require('./nt-books/philemon.js'),
+  ...require('./nt-books/hebrews.js'),
+  ...require('./nt-books/james.js'),
+  ...require('./nt-books/1-peter.js'),
+  ...require('./nt-books/2-peter.js'),
+  ...require('./nt-books/1-john.js'),
+  ...require('./nt-books/2-john.js'),
+  ...require('./nt-books/3-john.js'),
+  ...require('./nt-books/jude.js'),
+  ...require('./nt-books/revelation.js')
+];
+
+module.exports = books.flat();
