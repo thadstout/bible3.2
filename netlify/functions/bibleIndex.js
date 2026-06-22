@@ -1,5 +1,6 @@
 const biblePassages = require('./allBooks.js');
 const { getConnectionPassages, getConnectionBoostRefs } = require('./propheticConnections.js');
+const { getRelationshipRefs, getRelationshipPassages } = require('./relationshipEngine.js');
 
 const stopWords = new Set([
   'the','a','an','and','or','but','is','are','was','were','to','of','in','on','for','with','my','me','i','it','that','this','can','should','do','does','be','as','at','from','if','what','about','have','has','had','will','would','could','there','their','they','them','his','her','him','he','she','we','us','you','your','our','not','so','then','than','into','unto','by','am'
@@ -290,14 +291,16 @@ function searchBible(question, limit = 25) {
   const originalWords = tokenize(question);
   const terms = expandTerms(originalWords);
   const connectionBoostRefs = getConnectionBoostRefs(question);
-  const scored = biblePassages.map(p => ({ ...p, score: scorePassage(p, question, terms, originalWords) + (connectionBoostRefs.has(p.ref) ? 60 : 0) }))
+  const relationshipBoostRefs = getRelationshipRefs(question);
+  const scored = biblePassages.map(p => ({ ...p, score: scorePassage(p, question, terms, originalWords) + (connectionBoostRefs.has(p.ref) ? 60 : 0) + (relationshipBoostRefs.has(p.ref) ? 65 : 0) }))
     .filter(p => p.score > 0)
     .sort((a, b) => b.score - a.score || a.book.localeCompare(b.book) || a.chapter - b.chapter || a.verse - b.verse);
 
   const top = scored.slice(0, Math.max(limit, 12));
   const withContext = addNearbyContext(top.slice(0, Math.ceil(limit / 2)), 1);
   const connectionPassages = getConnectionPassages(question, [...exactMatches, ...top], biblePassages, limit);
-  const combined = dedupe([...exactMatches, ...connectionPassages, ...top, ...withContext]);
+  const relationshipPassages = getRelationshipPassages(question, [...exactMatches, ...top], Math.max(limit, 35));
+  const combined = dedupe([...exactMatches, ...relationshipPassages, ...connectionPassages, ...top, ...withContext]);
 
   const fallbackRefs = new Set([
     'Genesis 1:1','Psalms 119:105','Psalms 119:160','Proverbs 3:5','Proverbs 3:6','Isaiah 8:20','2 Timothy 3:16','2 Timothy 3:17','Hebrews 4:12','John 3:16','John 3:17','John 3:18','Acts 4:12','1 Corinthians 15:3','1 Corinthians 15:4','Ephesians 2:8','Ephesians 2:9','Ephesians 2:10','2 Corinthians 6:14','2 Corinthians 6:15','2 Corinthians 6:16','2 Corinthians 6:17','Romans 16:17','Colossians 4:6'
