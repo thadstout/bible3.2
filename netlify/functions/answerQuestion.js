@@ -1,6 +1,7 @@
 const OpenAI = require('openai');
 const { searchBible } = require('./bibleIndex.js');
 const { LOGIC_RULES } = require('./logicRules.js');
+const { getDoctrinalLogic } = require('./doctrinalLogic.js');
 
 function json(statusCode, body) {
   return {
@@ -53,6 +54,7 @@ exports.handler = async function(event) {
   const passages = searchBible(question, 25);
   const passageText = passages.map((p, i) => `${i + 1}. ${p.ref} — ${p.text}`).join('\n');
   const suggestedOutcome = classifyQuestion(question);
+  const doctrinalLogic = getDoctrinalLogic(question, passages);
 
   if (suggestedOutcome === 'Outside scope') {
     return json(200, {
@@ -64,9 +66,12 @@ exports.handler = async function(event) {
 
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-  const prompt = `You are Bible Answers App 3.4 Logic Update. You must answer under the following interpretive rules and source restraints.
+  const prompt = `You are Bible Answers App 3.5 Doctrinal Logic Update. You must answer under the following interpretive rules and source restraints.
 
 ${LOGIC_RULES}
+
+Additional doctrinal reasoning layer triggered by this question/search:
+${doctrinalLogic}
 
 Required answer style:
 - Be clear and direct.
@@ -87,6 +92,8 @@ Suggested outcome from simple rules: ${suggestedOutcome}
 
 Top 25 ranked KJV whole-Bible search results:
 ${passageText}
+
+Before answering, apply the general rules first, then the doctrinal logic only if it helps interpret the supplied passages. Do not mention Greek unless one of the approved Greek notes is directly relevant and helpful.
 
 Return strict JSON with these fields:
 {
