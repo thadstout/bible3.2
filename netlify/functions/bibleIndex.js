@@ -1,5 +1,5 @@
 const biblePassages = require('./allBooks.js');
-const { getConnectionPassages } = require('./propheticConnections.js');
+const { getConnectionPassages, getConnectionBoostRefs } = require('./propheticConnections.js');
 
 const stopWords = new Set([
   'the','a','an','and','or','but','is','are','was','were','to','of','in','on','for','with','my','me','i','it','that','this','can','should','do','does','be','as','at','from','if','what','about','have','has','had','will','would','could','there','their','they','them','his','her','him','he','she','we','us','you','your','our','not','so','then','than','into','unto','by','am'
@@ -13,9 +13,12 @@ const synonymMap = {
   idolatry: ['idol','idols','image','graven','strange','gods'],
   sacrifice: ['offering','altar','blood','atonement','lamb'],
   prophecy: ['prophet','prophets','vision','day of the lord','messiah','sun','moon','stars','earthquake','wrath','shaken','heaven','beast','horn','saints','months'],
-  beast: ['little horn','ten horns','great words','blasphemy','war with the saints','overcome the saints','42 months','forty two months'],
+  antichrist: ['beast','little horn','man of sin','son of perdition','wicked','prince that shall come','mark of the beast','false prophet','war with the saints','overcome the saints','kill the saints','beheaded','42 months','forty two months','time times half','abomination of desolation'],
+  antichrists: ['antichrist','beast','little horn','man of sin','son of perdition','wicked','false prophet'],
+  mark: ['mark of the beast','beast','buy','sell','right hand','forehead','number of his name','image of the beast'],
+  beast: ['antichrist','little horn','ten horns','great words','blasphemy','war with the saints','overcome the saints','42 months','forty two months','mark of the beast','image of the beast','buy','sell'],
   horn: ['little horn','beast','ten horns','great words','war with the saints','time times half'],
-  saints: ['war with the saints','wear out the saints','overcome the saints','beast','little horn'],
+  saints: ['war with the saints','wear out the saints','overcome the saints','beast','little horn','antichrist','killed','beheaded'],
   months: ['42 months','forty two months','time times half','1260 days','thousand two hundred and threescore'],
   seal: ['seals','sixth seal','sun','moon','stars','earthquake','wrath','heaven'],
   sixth: ['sixth seal','seal','sun','moon','stars','earthquake','wrath','heaven'],
@@ -36,7 +39,7 @@ const synonymMap = {
   separate: ['separation','withdraw','avoid','fellowship','company','yoked','partaker','doctrine'],
   fellowship: ['company','partaker','yoked','communion','agreement','separate'],
   doctrine: ['teaching','gospel','truth','word','commandment'],
-  false: ['deceive','deceiver','another','contrary','error','heresy'],
+  false: ['deceive','deceiver','another','contrary','error','heresy','false prophet','lying wonders'],
   church: ['assembly','brethren','body','fellowship','doctrine'],
   marriage: ['marry','wife','husband','fornication','adultery','one flesh'],
   dating: ['marry','marriage','unbeliever','yoked','fornication'],
@@ -205,7 +208,7 @@ function phraseScore(question, text, ref = "") {
 
 
   // Prophetic identifier boost: connect Daniel 7 little horn with Revelation 13 beast by shared rare markers.
-  if (/(little horn|beast|revelation 13|daniel 7|42 months|forty two months|1260 days|time times|half a time|war with the saints|wear out the saints|overcome the saints|ten horns|great words|blasphemy|blasphemies)/.test(q) && /^(Daniel 7:7|Daniel 7:8|Daniel 7:11|Daniel 7:20|Daniel 7:21|Daniel 7:23|Daniel 7:24|Daniel 7:25|Daniel 7:26|Daniel 7:27|Daniel 12:7|Daniel 12:11|Daniel 12:12|Revelation 11:2|Revelation 11:3|Revelation 12:6|Revelation 12:14|Revelation 13:1|Revelation 13:2|Revelation 13:5|Revelation 13:6|Revelation 13:7|Revelation 13:8|Revelation 17:12|Revelation 17:13|Revelation 17:14)/.test(ref)) score += 40;
+  if (/(antichrist|little horn|beast|mark of the beast|image of the beast|man of sin|son of perdition|wicked|revelation 13|daniel 7|42 months|forty two months|1260 days|time times|half a time|war with the saints|wear out the saints|overcome the saints|ten horns|great words|blasphemy|blasphemies|buy|sell|forehead|right hand)/.test(q) && /^(Daniel 7:7|Daniel 7:8|Daniel 7:11|Daniel 7:20|Daniel 7:21|Daniel 7:23|Daniel 7:24|Daniel 7:25|Daniel 7:26|Daniel 7:27|Daniel 8:23|Daniel 8:24|Daniel 8:25|Daniel 9:26|Daniel 9:27|Daniel 11:36|Daniel 11:37|Daniel 11:38|Daniel 11:39|Daniel 11:40|Daniel 12:7|Daniel 12:11|Daniel 12:12|Matthew 24:15|Matthew 24:21|Matthew 24:22|Matthew 24:24|2 Thessalonians 2:3|2 Thessalonians 2:4|2 Thessalonians 2:8|2 Thessalonians 2:9|2 Thessalonians 2:10|Revelation 11:2|Revelation 11:3|Revelation 12:6|Revelation 12:14|Revelation 13:1|Revelation 13:2|Revelation 13:3|Revelation 13:4|Revelation 13:5|Revelation 13:6|Revelation 13:7|Revelation 13:8|Revelation 13:11|Revelation 13:12|Revelation 13:13|Revelation 13:14|Revelation 13:15|Revelation 13:16|Revelation 13:17|Revelation 13:18|Revelation 14:9|Revelation 14:10|Revelation 14:11|Revelation 15:2|Revelation 16:2|Revelation 19:19|Revelation 19:20|Revelation 20:4)/.test(ref)) score += 48;
 
   if (/(creation|created|beginning|male|female|marriage|one flesh|gender)/.test(q) && /^(Genesis 1:|Genesis 2:|Malachi 2:)/.test(ref)) score += 12;
   if (/(law|commandment|statute|judgment|ordinance|sabbath|clean|unclean)/.test(q) && /^(Exodus 20:|Leviticus |Deuteronomy 5:|Deuteronomy 6:|Deuteronomy 22:)/.test(ref)) score += 10;
@@ -255,7 +258,7 @@ function searchBible(question, limit = 25) {
   const ref = parseReference(question);
   let exactMatches = [];
   const qForRef = normalize(question);
-  const wantsCrossReferences = /(connect|connection|compare|parallel|cross reference|cross-reference|same event|sun|moon|stars|earthquake|heaven|wrath|day of the lord|darkened|blood|little horn|beast|42 months|forty two months|1260 days|time times|half a time|war with the saints|ten horns|blasphemy|great words)/.test(qForRef);
+  const wantsCrossReferences = /(connect|connection|compare|parallel|cross reference|cross-reference|same event|sun|moon|stars|earthquake|heaven|wrath|day of the lord|darkened|blood|antichrist|little horn|beast|mark of the beast|image of the beast|man of sin|son of perdition|42 months|forty two months|1260 days|time times|half a time|war with the saints|ten horns|blasphemy|great words)/.test(qForRef);
   if (ref) {
     exactMatches = exactReferenceResults(ref, limit);
     if (wantsCrossReferences && !ref.verseStart) exactMatches = [];
@@ -266,7 +269,8 @@ function searchBible(question, limit = 25) {
 
   const originalWords = tokenize(question);
   const terms = expandTerms(originalWords);
-  const scored = biblePassages.map(p => ({ ...p, score: scorePassage(p, question, terms, originalWords) }))
+  const connectionBoostRefs = getConnectionBoostRefs(question);
+  const scored = biblePassages.map(p => ({ ...p, score: scorePassage(p, question, terms, originalWords) + (connectionBoostRefs.has(p.ref) ? 60 : 0) }))
     .filter(p => p.score > 0)
     .sort((a, b) => b.score - a.score || a.book.localeCompare(b.book) || a.chapter - b.chapter || a.verse - b.verse);
 

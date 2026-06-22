@@ -1,4 +1,34 @@
 const PROPHETIC_CONNECTIONS = [
+
+  {
+    id: 'antichrist_end_times_ruler_actions',
+    title: 'Antichrist / beast / little horn / man of sin action map',
+    triggers: [
+      'antichrist','what does the antichrist do','end times ruler','man of sin','son of perdition','wicked one','wicked','beast','mark of the beast','image of the beast','little horn','prince that shall come','abomination of desolation','false prophet','buy or sell','right hand','forehead','war with the saints','overcome the saints','wear out the saints','beheaded'
+    ],
+    markers: [
+      'denies the Father and the Son / spirit of antichrist language',
+      'little horn / beast / man of sin / wicked one title cluster',
+      'speaks great things and blasphemies',
+      'opposes and exalts himself above God',
+      'makes war with the saints and overcomes/wears them out for a limited time',
+      'deceives with signs or lying wonders',
+      'uses image/mark worship and buying-selling control',
+      'is judged/destroyed by Christ'
+    ],
+    refs: [
+      '1 John 2:18','1 John 2:22','1 John 4:3','2 John 1:7',
+      'Revelation 13:5','Revelation 13:6','Revelation 13:7','Revelation 13:8','Revelation 13:15','Revelation 13:16','Revelation 13:17','Revelation 13:18','Revelation 20:4',
+      'Daniel 7:8','Daniel 7:11','Daniel 7:21','Daniel 7:25','Daniel 7:26','Daniel 7:27',
+      '2 Thessalonians 2:3','2 Thessalonians 2:4','2 Thessalonians 2:8','2 Thessalonians 2:9','2 Thessalonians 2:10',
+      'Daniel 8:23','Daniel 8:24','Daniel 8:25','Daniel 9:26','Daniel 9:27','Daniel 11:36','Daniel 11:37','Daniel 11:38','Daniel 11:39','Daniel 11:40',
+      'Daniel 12:7','Daniel 12:11','Daniel 12:12',
+      'Matthew 24:15','Matthew 24:21','Matthew 24:22','Matthew 24:24',
+      'Revelation 13:1','Revelation 13:2','Revelation 13:3','Revelation 13:4','Revelation 13:11','Revelation 13:12','Revelation 13:13','Revelation 13:14',
+      'Revelation 14:9','Revelation 14:10','Revelation 14:11','Revelation 15:2','Revelation 16:2','Revelation 19:19','Revelation 19:20'
+    ],
+    instruction: `When a question asks what the antichrist does, do not stop with only the word antichrist in John's epistles. First cite John's direct antichrist passages if supplied, then compare the related end-times ruler passages by textual markers: little horn, beast, man of sin, son of perdition, wicked one, blasphemy, self-exaltation, war with saints, 42 months/time-times-half-a-time, image/mark, buying and selling, deception, and final judgment. Do not merely assert the titles are identical; state that the app is comparing passages because they share distinctive biblical identifiers.`
+  },
   {
     id: 'little_horn_beast_42_months_war_with_saints',
     title: 'Daniel little horn / Revelation beast / 3.5-year war with saints',
@@ -58,8 +88,22 @@ function triggeredConnections(question, passages = []) {
 function getConnectionPassages(question, currentPassages, allPassages, limit = 25) {
   const connections = triggeredConnections(question, currentPassages);
   if (!connections.length) return [];
-  const refs = new Set(connections.flatMap(c => c.refs));
-  return allPassages.filter(p => refs.has(p.ref)).slice(0, limit);
+  const refOrder = connections.flatMap(c => c.refs);
+  const byRef = new Map(allPassages.map(p => [p.ref, p]));
+  const ordered = [];
+  const seen = new Set();
+  for (const ref of refOrder) {
+    if (!seen.has(ref) && byRef.has(ref)) {
+      ordered.push(byRef.get(ref));
+      seen.add(ref);
+    }
+  }
+  return ordered.slice(0, limit);
+}
+
+function getConnectionBoostRefs(question, passages = []) {
+  const connections = triggeredConnections(question, passages);
+  return new Set(connections.flatMap(c => c.refs));
 }
 
 function getConnectionInstructions(question, passages = []) {
@@ -70,4 +114,4 @@ function getConnectionInstructions(question, passages = []) {
   }).join('\n\n');
 }
 
-module.exports = { PROPHETIC_CONNECTIONS, triggeredConnections, getConnectionPassages, getConnectionInstructions };
+module.exports = { PROPHETIC_CONNECTIONS, triggeredConnections, getConnectionPassages, getConnectionBoostRefs, getConnectionInstructions };
