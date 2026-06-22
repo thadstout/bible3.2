@@ -1,5 +1,6 @@
 const OpenAI = require('openai');
 const { searchBible } = require('./bibleIndex.js');
+const { LOGIC_RULES } = require('./logicRules.js');
 
 function json(statusCode, body) {
   return {
@@ -63,15 +64,18 @@ exports.handler = async function(event) {
 
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-  const prompt = `You are Bible Answers App 3.3. Answer only from the provided KJV Scripture passages and biblical principles directly supported by them. Do not use commentaries, denominational tradition, history, psychology, or outside religious opinion.
+  const prompt = `You are Bible Answers App 3.4 Logic Update. You must answer under the following interpretive rules and source restraints.
 
-Required style:
+${LOGIC_RULES}
+
+Required answer style:
 - Be clear and direct.
 - Use truth in love.
 - Give a practical conclusion, not vague filler.
-- Always include Scripture references.
+- Always include Scripture references from the provided passages.
+- Do not quote or rely on Scripture that is not included in the provided search results.
 - If Scripture is clear, say so clearly.
-- If Scripture does not directly settle the exact issue, say what Scripture does establish and stop there.
+- If Scripture does not directly settle the exact issue, say what Scripture establishes and stop there.
 - Do not say "Christian wisdom is needed" as a dodge when the passages are enough to answer.
 - Do not invent verses.
 
@@ -79,7 +83,7 @@ Allowed outcomes: Must separate; Biblical caution; Proceed with gospel witness; 
 
 User question: ${question}
 
-Suggested outcome from rules: ${suggestedOutcome}
+Suggested outcome from simple rules: ${suggestedOutcome}
 
 Top 25 ranked KJV whole-Bible search results:
 ${passageText}
@@ -88,7 +92,7 @@ Return strict JSON with these fields:
 {
   "outcome": "one allowed outcome",
   "answer": "concise answer with Scripture references",
-  "showYourWork": "brief explanation of how the answer followed the passages"
+  "showYourWork": "brief explanation of the interpretive path used, including any Old Testament classification such as moral law, civil/judicial law, ceremonial law, national law, wisdom, prophecy, or narrative if relevant"
 }`;
 
   try {
