@@ -5,6 +5,7 @@ const { getDoctrinalLogic } = require('./doctrinalLogic.js');
 const { getConnectionInstructions } = require('./propheticConnections.js');
 const { getStudyProtocol } = require('./studyProtocol.js');
 const { getRelationshipInstructions, getRelationshipPassages } = require('./relationshipEngine.js');
+const { getContextInstructions, getContextPassages } = require('./contextRelationshipEngine.js');
 
 function json(statusCode, body) {
   return {
@@ -56,13 +57,14 @@ exports.handler = async function(event) {
 
   let passages = searchBible(question, 25);
   const relationshipPassages = getRelationshipPassages(question, passages, 35);
-  if (relationshipPassages.length) {
+  const contextPassages = getContextPassages(question, 45);
+  if (relationshipPassages.length || contextPassages.length) {
     const seen = new Set();
-    passages = [...relationshipPassages, ...passages].filter(p => {
+    passages = [...contextPassages, ...relationshipPassages, ...passages].filter(p => {
       if (seen.has(p.ref)) return false;
       seen.add(p.ref);
       return true;
-    }).slice(0, 35);
+    }).slice(0, 50);
   }
   const passageText = passages.map((p, i) => `${i + 1}. ${p.ref} — ${p.text}`).join('\n');
   const suggestedOutcome = classifyQuestion(question);
@@ -70,6 +72,7 @@ exports.handler = async function(event) {
   const connectionInstructions = getConnectionInstructions(question, passages);
   const studyProtocol = getStudyProtocol(question);
   const relationshipInstructions = getRelationshipInstructions(question, passages);
+  const contextInstructions = getContextInstructions(question);
 
   if (suggestedOutcome === 'Outside scope') {
     return json(200, {
@@ -81,7 +84,7 @@ exports.handler = async function(event) {
 
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-  const prompt = `You are Bible Answers App 4.2 Direct Passage Priority Revision. You must answer under the following interpretive rules and source restraints.
+  const prompt = `You are Bible Answers App 4.3 Context Relationship Engine. You must answer under the following interpretive rules and source restraints.
 
 ${LOGIC_RULES}
 
@@ -93,6 +96,9 @@ ${connectionInstructions}
 
 Biblical relationship engine triggered by this question/search:
 ${relationshipInstructions}
+
+Context relationship engine triggered by this question:
+${contextInstructions}
 
 Bible-only study protocol triggered by this question:
 ${studyProtocol}
@@ -109,12 +115,14 @@ Required answer style:
 - Do not invent verses.
 - For prophecy questions, actively compare repeated event markers across supplied passages.
 - Treat repeated rare identifiers as cross-reference evidence, not as commentary.
-- The Biblical Relationship Engine is only a passage-gathering helper. It is not an authority and must not force conclusions.
+- The Biblical Relationship Engine and Context Relationship Engine are only passage-gathering/study helpers. They are not authorities and must not force conclusions.
 - Relationship clusters must be subordinate to question intent. Prophecy clusters must not override salvation, gospel, election, or definition questions unless the user question itself asks about prophecy/end-times subjects.
 - When relationship clusters are supplied, compare the repeated textual markers and state the strength/limits of the connection from the supplied verses only.
 - For Daniel/Revelation questions, compare shared identifiers such as little horn/beast, ten horns, great words/blasphemy, war with the saints, overcoming/wearing out saints, time-times-half-a-time, 42 months, and 1260 days.
 - For antichrist questions, do not stop with only verses containing the exact word antichrist. Use supplied passages to compare the title/action cluster: antichrist, little horn, beast, man of sin, son of perdition, wicked one, mark/image of the beast, war with the saints, buying/selling control, and final judgment.
 - For salvation/election/predestination questions, do not answer from isolated vocabulary. Compare the supplied passages across the full salvation subject before concluding: God's saving desire, man's responsibility, grace/faith/works, election/predestination/calling, condemnation/judgment, security, and gospel invitation.
+- Context Relationship Engine rule: when a doctrinal term appears, do not define it by the term alone. First check the immediate context, object, audience, and purpose. Ask: chosen to what? predestinated to what? called by what means? saved from what and unto what? justified in what sense? works as basis, evidence, or walk?
+- Treat Romans, Hebrews, Ephesians, and all other passages this way: immediate context first, then related contexts, then whole-Bible comparison. Do not let a related cluster override the direct context of the passage being discussed.
 
 - Direct Passage Priority rule: when a question asks the scope of Christ's death/atonement (for example, "did Jesus die for everyone?"), first weigh the direct supplied passages: Hebrews 2:9, 1 Timothy 4:10, 1 Timothy 2:6, and 1 John 2:2. Then consider related supplied passages such as John 3:16-17, 2 Corinthians 5:14-15, and Romans 5:18. Related passages may add support, but must not replace or override the direct passages.
 - The app should discover relevant verses the user did not mention when the relationship engine supplies them, but the final answer may cite only verses actually supplied in the ranked passages below.
@@ -128,7 +136,7 @@ User question: ${question}
 
 Suggested outcome from simple rules: ${suggestedOutcome}
 
-Ranked KJV whole-Bible search results, including relationship-cluster passages when triggered:
+Ranked KJV whole-Bible search results, including relationship-cluster and context-cluster passages when triggered:
 ${passageText}
 
 Before answering, apply the general rules first, then the Bible-only study protocol. Use doctrinal logic only as a search/comparison helper, not as an authority over the supplied passages. Do not mention Greek unless one of the approved Greek notes is directly relevant and helpful.
