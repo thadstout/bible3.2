@@ -1,4 +1,5 @@
 const biblePassages = require('./allBooks.js');
+const { getConnectionPassages } = require('./propheticConnections.js');
 
 const stopWords = new Set([
   'the','a','an','and','or','but','is','are','was','were','to','of','in','on','for','with','my','me','i','it','that','this','can','should','do','does','be','as','at','from','if','what','about','have','has','had','will','would','could','there','their','they','them','his','her','him','he','she','we','us','you','your','our','not','so','then','than','into','unto','by','am'
@@ -11,7 +12,11 @@ const synonymMap = {
   commandment: ['commandments','law','statutes','judgments','ordinances'],
   idolatry: ['idol','idols','image','graven','strange','gods'],
   sacrifice: ['offering','altar','blood','atonement','lamb'],
-  prophecy: ['prophet','prophets','vision','day of the lord','messiah','sun','moon','stars','earthquake','wrath','shaken','heaven'],
+  prophecy: ['prophet','prophets','vision','day of the lord','messiah','sun','moon','stars','earthquake','wrath','shaken','heaven','beast','horn','saints','months'],
+  beast: ['little horn','ten horns','great words','blasphemy','war with the saints','overcome the saints','42 months','forty two months'],
+  horn: ['little horn','beast','ten horns','great words','war with the saints','time times half'],
+  saints: ['war with the saints','wear out the saints','overcome the saints','beast','little horn'],
+  months: ['42 months','forty two months','time times half','1260 days','thousand two hundred and threescore'],
   seal: ['seals','sixth seal','sun','moon','stars','earthquake','wrath','heaven'],
   sixth: ['sixth seal','seal','sun','moon','stars','earthquake','wrath','heaven'],
   earthquake: ['earthquakes','shaken','shake','tremble','sun','moon','stars','wrath'],
@@ -191,12 +196,16 @@ function phraseScore(question, text, ref = "") {
   const phrases = [];
   const quoted = [...String(question || '').matchAll(/[“"]([^”"]{3,})[”"]/g)].map(m => normalize(m[1]));
   phrases.push(...quoted);
-  const importantPhrases = ['works salvation','saved by works','eternal life','false prophet','false teachers','another gospel','unequally yoked','not of works','communion','lords supper','body of christ','blood of christ','male and female','one flesh','fornication','love one another','sixth seal','sun darkened','moon became as blood','moon to blood','stars of heaven','great earthquake','day of the lord','day of his wrath','heaven departed'];
+  const importantPhrases = ['works salvation','saved by works','eternal life','false prophet','false teachers','another gospel','unequally yoked','not of works','communion','lords supper','body of christ','blood of christ','male and female','one flesh','fornication','love one another','sixth seal','sun darkened','moon became as blood','moon to blood','stars of heaven','great earthquake','day of the lord','day of his wrath','heaven departed','little horn','ten horns','great words','war with the saints','wear out the saints','overcome the saints','forty two months','42 months','time times half','half a time','thousand two hundred and threescore'];
   phrases.push(...importantPhrases.filter(p => q.includes(p)));
   let score = 0;
   for (const phrase of phrases) {
     if (phrase && text.includes(phrase)) score += 18;
   }
+
+
+  // Prophetic identifier boost: connect Daniel 7 little horn with Revelation 13 beast by shared rare markers.
+  if (/(little horn|beast|revelation 13|daniel 7|42 months|forty two months|1260 days|time times|half a time|war with the saints|wear out the saints|overcome the saints|ten horns|great words|blasphemy|blasphemies)/.test(q) && /^(Daniel 7:7|Daniel 7:8|Daniel 7:11|Daniel 7:20|Daniel 7:21|Daniel 7:23|Daniel 7:24|Daniel 7:25|Daniel 7:26|Daniel 7:27|Daniel 12:7|Daniel 12:11|Daniel 12:12|Revelation 11:2|Revelation 11:3|Revelation 12:6|Revelation 12:14|Revelation 13:1|Revelation 13:2|Revelation 13:5|Revelation 13:6|Revelation 13:7|Revelation 13:8|Revelation 17:12|Revelation 17:13|Revelation 17:14)/.test(ref)) score += 40;
 
   if (/(creation|created|beginning|male|female|marriage|one flesh|gender)/.test(q) && /^(Genesis 1:|Genesis 2:|Malachi 2:)/.test(ref)) score += 12;
   if (/(law|commandment|statute|judgment|ordinance|sabbath|clean|unclean)/.test(q) && /^(Exodus 20:|Leviticus |Deuteronomy 5:|Deuteronomy 6:|Deuteronomy 22:)/.test(ref)) score += 10;
@@ -246,9 +255,10 @@ function searchBible(question, limit = 25) {
   const ref = parseReference(question);
   let exactMatches = [];
   const qForRef = normalize(question);
-  const wantsCrossReferences = /(connect|connection|compare|parallel|cross reference|cross-reference|same event|sun|moon|stars|earthquake|heaven|wrath|day of the lord|darkened|blood)/.test(qForRef);
+  const wantsCrossReferences = /(connect|connection|compare|parallel|cross reference|cross-reference|same event|sun|moon|stars|earthquake|heaven|wrath|day of the lord|darkened|blood|little horn|beast|42 months|forty two months|1260 days|time times|half a time|war with the saints|ten horns|blasphemy|great words)/.test(qForRef);
   if (ref) {
     exactMatches = exactReferenceResults(ref, limit);
+    if (wantsCrossReferences && !ref.verseStart) exactMatches = [];
     // For simple reference lookups, return the requested passage. For prophetic/thematic connection questions,
     // keep the exact passage but continue searching so parallel passages can be included too.
     if (exactMatches.length && !wantsCrossReferences) return exactMatches;
@@ -262,7 +272,8 @@ function searchBible(question, limit = 25) {
 
   const top = scored.slice(0, Math.max(limit, 12));
   const withContext = addNearbyContext(top.slice(0, Math.ceil(limit / 2)), 1);
-  const combined = dedupe([...exactMatches, ...top, ...withContext]);
+  const connectionPassages = getConnectionPassages(question, [...exactMatches, ...top], biblePassages, limit);
+  const combined = dedupe([...exactMatches, ...connectionPassages, ...top, ...withContext]);
 
   const fallbackRefs = new Set([
     'Genesis 1:1','Psalms 119:105','Psalms 119:160','Proverbs 3:5','Proverbs 3:6','Isaiah 8:20','2 Timothy 3:16','2 Timothy 3:17','Hebrews 4:12','John 3:16','John 3:17','John 3:18','Acts 4:12','1 Corinthians 15:3','1 Corinthians 15:4','Ephesians 2:8','Ephesians 2:9','Ephesians 2:10','2 Corinthians 6:14','2 Corinthians 6:15','2 Corinthians 6:16','2 Corinthians 6:17','Romans 16:17','Colossians 4:6'

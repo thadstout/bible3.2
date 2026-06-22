@@ -33,7 +33,7 @@ EPHESIANS DOCTRINAL LOGIC
   },
   revelation: {
     triggers: [
-      'revelation','sixth seal','seal','sun darkened','moon blood','moon darkened','stars fall','earthquake','day of the lord','day of wrath','heaven departed','prophecy','tribulation','antichrist','beast','mark of the beast','millennium','thousand years','book of life','lake of fire','new heaven','new earth','babylon','seven churches','last days','second coming','satan bound','resurrection','judgment seat','great white throne'
+      'revelation','daniel 7','little horn','beast','revelation 13','42 months','1260 days','time times half','war with the saints','ten horns','sixth seal','seal','sun darkened','moon blood','moon darkened','stars fall','earthquake','day of the lord','day of wrath','heaven departed','prophecy','tribulation','antichrist','beast','mark of the beast','millennium','thousand years','book of life','lake of fire','new heaven','new earth','babylon','seven churches','last days','second coming','satan bound','resurrection','judgment seat','great white throne'
     ],
     rules: `
 REVELATION DOCTRINAL LOGIC
@@ -47,7 +47,9 @@ REVELATION DOCTRINAL LOGIC
 8. Distinguish present church instruction, future tribulation/judgment, kingdom reign, final judgment, and new heaven/new earth.
 9. Prophetic event-marker connection rule: when Revelation 6:12-17 appears or the question mentions the sixth seal, intentionally compare shared signs with Matthew 24:29, Mark 13:24-25, Luke 21:25-26, Acts 2:19-20, Joel 2:10, Joel 2:30-31, Joel 3:15, Isaiah 13:10, Isaiah 13:13, Isaiah 34:4, Ezekiel 32:7-8, Haggai 2:6, and Hebrews 12:26-27 when those passages are supplied in the search results.
 10. Treat repeated event markers as legitimate cross-reference evidence: sun darkened/black, moon blood/darkened, stars falling, heavens shaken/rolled/departed, great earthquake/shaking of earth, and day/wrath language. Do not force identity if context distinguishes them, but do not ignore the connection when multiple markers overlap.
-11. For the sixth seal, the app should recognize that Revelation 6:12-17 belongs to the broader prophetic pattern of cosmic disturbance associated with the day of the Lord / coming judgment. The answer should state the connection carefully and cite only supplied passages.
+11. Daniel 7 and Revelation 13 connection rule: when supplied passages include Daniel's little horn and Revelation's beast, compare repeated textual identifiers such as ten horns, great words/blasphemy, war with the saints, overcoming/wearing out saints, and the stated limited duration. State the connection as shared textual markers rather than an outside-system conclusion.
+12. For the 3.5-year period, compare 'time and times and the dividing of time,' 'time, and times, and half a time,' 'forty and two months,' and 'a thousand two hundred and threescore days' when supplied. Do not force every passage to be identical if the context distinguishes it, but do not ignore the shared time marker.
+13. For the sixth seal, the app should recognize that Revelation 6:12-17 belongs to the broader prophetic pattern of cosmic disturbance associated with the day of the Lord / coming judgment. The answer should state the connection carefully and cite only supplied passages.
 `
   },
   greek: {

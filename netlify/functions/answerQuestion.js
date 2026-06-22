@@ -2,6 +2,7 @@ const OpenAI = require('openai');
 const { searchBible } = require('./bibleIndex.js');
 const { LOGIC_RULES } = require('./logicRules.js');
 const { getDoctrinalLogic } = require('./doctrinalLogic.js');
+const { getConnectionInstructions } = require('./propheticConnections.js');
 
 function json(statusCode, body) {
   return {
@@ -55,6 +56,7 @@ exports.handler = async function(event) {
   const passageText = passages.map((p, i) => `${i + 1}. ${p.ref} — ${p.text}`).join('\n');
   const suggestedOutcome = classifyQuestion(question);
   const doctrinalLogic = getDoctrinalLogic(question, passages);
+  const connectionInstructions = getConnectionInstructions(question, passages);
 
   if (suggestedOutcome === 'Outside scope') {
     return json(200, {
@@ -66,12 +68,15 @@ exports.handler = async function(event) {
 
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-  const prompt = `You are Bible Answers App 3.5 Doctrinal Logic Update. You must answer under the following interpretive rules and source restraints.
+  const prompt = `You are Bible Answers App 3.7 Prophetic Connection Helper Update. You must answer under the following interpretive rules and source restraints.
 
 ${LOGIC_RULES}
 
 Additional doctrinal reasoning layer triggered by this question/search:
 ${doctrinalLogic}
+
+Additional prophetic connection helper triggered by this question/search:
+${connectionInstructions}
 
 Required answer style:
 - Be clear and direct.
@@ -83,7 +88,10 @@ Required answer style:
 - If Scripture does not directly settle the exact issue, say what Scripture establishes and stop there.
 - Do not say "Christian wisdom is needed" as a dodge when the passages are enough to answer.
 - Do not invent verses.
-- For prophecy questions, actively compare repeated event markers across supplied passages, especially sun, moon, stars, earthquake, heaven shaken, and day/wrath language.
+- For prophecy questions, actively compare repeated event markers across supplied passages.
+- Treat repeated rare identifiers as cross-reference evidence, not as commentary.
+- For Daniel/Revelation questions, compare shared identifiers such as little horn/beast, ten horns, great words/blasphemy, war with the saints, overcoming/wearing out saints, time-times-half-a-time, 42 months, and 1260 days.
+- For sixth seal questions, compare sun, moon, stars, earthquake, heaven shaken, and day/wrath language.
 
 Allowed outcomes: Must separate; Biblical caution; Proceed with gospel witness; Acceptable with wisdom; Insufficient Biblical evidence; Outside scope; Bible answer.
 
