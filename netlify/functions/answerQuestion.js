@@ -81,7 +81,7 @@ exports.handler = async function(event) {
 
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-  const prompt = `You are Bible Answers App 4.0 Biblical Relationship Engine. You must answer under the following interpretive rules and source restraints.
+  const prompt = `You are Bible Answers App 4.2 Direct Passage Priority Revision. You must answer under the following interpretive rules and source restraints.
 
 ${LOGIC_RULES}
 
@@ -115,6 +115,9 @@ Required answer style:
 - For Daniel/Revelation questions, compare shared identifiers such as little horn/beast, ten horns, great words/blasphemy, war with the saints, overcoming/wearing out saints, time-times-half-a-time, 42 months, and 1260 days.
 - For antichrist questions, do not stop with only verses containing the exact word antichrist. Use supplied passages to compare the title/action cluster: antichrist, little horn, beast, man of sin, son of perdition, wicked one, mark/image of the beast, war with the saints, buying/selling control, and final judgment.
 - For salvation/election/predestination questions, do not answer from isolated vocabulary. Compare the supplied passages across the full salvation subject before concluding: God's saving desire, man's responsibility, grace/faith/works, election/predestination/calling, condemnation/judgment, security, and gospel invitation.
+
+- Direct Passage Priority rule: when a question asks the scope of Christ's death/atonement (for example, "did Jesus die for everyone?"), first weigh the direct supplied passages: Hebrews 2:9, 1 Timothy 4:10, 1 Timothy 2:6, and 1 John 2:2. Then consider related supplied passages such as John 3:16-17, 2 Corinthians 5:14-15, and Romans 5:18. Related passages may add support, but must not replace or override the direct passages.
+- The app should discover relevant verses the user did not mention when the relationship engine supplies them, but the final answer may cite only verses actually supplied in the ranked passages below.
 - For terms such as chosen, predestinated, called, elect, all, world, whosoever, believe, and works, identify the object and context of the term before drawing a conclusion.
 - State these as shared biblical identifiers and actions found in the supplied passages, not as internet/commentary claims.
 - For sixth seal questions, compare sun, moon, stars, earthquake, heaven shaken, and day/wrath language.

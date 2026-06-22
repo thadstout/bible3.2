@@ -70,6 +70,15 @@ When the question concerns salvation, heaven, hell, election, predestination, ca
 12. Avoid theological-system labels. Use Bible language.
 `;
 
+const ATONEMENT_SCOPE_STUDY_PROTOCOL = `
+Atonement Scope Study Protocol:
+1. If the question asks whether Jesus/Christ died for everyone, gather direct atonement-scope texts before application texts.
+2. Prioritize explicit supplied phrases: tasted death for every man; gave himself a ransom for all; died for all; Saviour of all men, specially of those that believe; propitiation for the whole world.
+3. Distinguish what the passage says about the scope of Christ's death from what other passages say about who receives salvation by faith.
+4. Do not use election/application language to cancel or soften direct all/every/world passages unless a supplied verse directly limits the death of Christ.
+5. Do not use theological shorthand such as limited atonement, sufficient/effective, or particular redemption as the answer. Explain only what the supplied verses say.
+`;
+
 const PROPHECY_STUDY_PROTOCOL = `
 PROPHECY STUDY PROTOCOL
 
@@ -90,9 +99,17 @@ function getStudyProtocol(question) {
   if (includesAny(q, [
     'salvation','saved','save','heaven','hell','eternal life','everlasting life','condemn','condemnation','damnation',
     'elect','election','chosen','choose','chooses','predestinate','predestinated','predestination','foreknow','foreknowledge','called','calling',
-    'grace','faith','believe','whosoever','gospel','justified','justification','works','born again','book of life'
+    'grace','faith','believe','whosoever','gospel','justified','justification','works','born again','book of life','died for all','died for everyone','die for everyone','ransom for all','tasted death for every man','atonement','propitiation','saviour of all men','savior of all men'
   ])) {
     protocol += '\n' + SALVATION_STUDY_PROTOCOL;
+  }
+
+  if (includesAny(q, [
+    'did jesus die for everyone','did christ die for everyone','died for everyone','die for everyone','died for all','die for all',
+    'tasted death for every man','taste death for every man','ransom for all','saviour of all men','savior of all men',
+    'propitiation for the whole world','limited atonement','particular redemption','atonement'
+  ])) {
+    protocol += '\n' + ATONEMENT_SCOPE_STUDY_PROTOCOL;
   }
 
   if (includesAny(q, [

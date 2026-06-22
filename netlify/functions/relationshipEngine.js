@@ -76,11 +76,42 @@ const RELATIONSHIPS = [
     ],
     instruction: 'Compare cosmic signs as repeated event markers. Do not force timing beyond what the supplied passages establish.'
   },
+
+  {
+    id: 'atonement_scope_cluster',
+    title: 'Atonement scope / for whom Christ died relationship cluster',
+    domain: 'salvation',
+    triggers: [
+      'did jesus die for everyone','did christ die for everyone','jesus died for everyone','christ died for everyone',
+      'die for all','died for all','died for every man','taste death for every man','tasted death for every man',
+      'ransom for all','saviour of all men','savior of all men','propitiation for the whole world','whole world',
+      'for whom did christ die','limited atonement','particular redemption','atonement','blood for all','death for all'
+    ],
+    markers: [
+      'direct statements that Christ died/tasted death/gave himself for all or every man',
+      'direct statements about God as Saviour of all men, specially of those that believe',
+      'direct statements about propitiation for the whole world',
+      'gospel invitation and belief passages that show who receives life',
+      'application passages should not be used to erase direct scope passages unless Scripture directly limits the death of Christ'
+    ],
+    refs: [
+      // Direct Passage Priority: these must be considered first for atonement-scope questions.
+      'Hebrews 2:9','1 Timothy 4:10','1 Timothy 2:6','1 John 2:2',
+      // Related/supporting passages may add light, but may not replace the direct passages above.
+      'John 3:16','John 3:17','2 Corinthians 5:14','2 Corinthians 5:15','Romans 5:18',
+      'John 1:29','John 3:14','John 3:15','John 3:18','John 3:36','John 6:51','John 12:32',
+      'Romans 5:6','Romans 5:8','Romans 10:12','Romans 10:13',
+      '2 Corinthians 5:19','2 Corinthians 5:20','2 Corinthians 5:21',
+      '1 Timothy 2:3','1 Timothy 2:4','1 Timothy 2:5',
+      'Titus 2:11','1 John 2:1','1 John 4:14','Revelation 22:17'
+    ],
+    instruction: 'Direct Passage Priority for atonement-scope questions: first consider Hebrews 2:9, 1 Timothy 4:10, 1 Timothy 2:6, and 1 John 2:2 when they are supplied. Then consider related passages such as John 3:16-17, 2 Corinthians 5:14-15, and Romans 5:18. Related passages may support, clarify, or balance the answer, but they must not replace or override the direct atonement-scope statements. Do not answer mainly from election/application passages unless the question asks about application. Do not use theological formulas such as sufficient for all/effective for the elect unless those ideas are clearly demonstrated from supplied verses and explained as an inference, not quoted as Scripture.'
+  },
   {
     id: 'salvation_whole_counsel_cluster',
     title: 'Salvation whole-counsel relationship cluster',
     domain: 'salvation',
-    triggers: ['salvation','saved','save','choose','chooses','chosen','elect','election','predestinated','predestination','foreknow','foreknowledge','called','calling','heaven','hell','eternal life','everlasting life','condemnation','whosoever','believe','faith','grace','works','book of life','tulip','calvinism','arminianism','total depravity','unconditional election','limited atonement','irresistible grace','perseverance of the saints'],
+    triggers: ['salvation','saved','save','choose','chooses','chosen','elect','election','predestinated','predestination','foreknow','foreknowledge','called','calling','heaven','hell','eternal life','everlasting life','condemnation','whosoever','believe','faith','grace','works','book of life','tulip','calvinism','arminianism','total depravity','unconditional election','limited atonement','particular redemption','atonement','jesus die','jesus died','christ die','christ died','die for everyone','died for everyone','die for all','died for all','death for all','for every man','ransom for all','tasted death for every man','taste death for every man','saviour of all men','savior of all men','propitiation for the whole world','whole world','irresistible grace','perseverance of the saints'],
     markers: [
       'God’s saving desire and provision',
       'human responsibility to believe/call/come',
@@ -113,7 +144,7 @@ function detectQuestionDomain(question) {
     'salvation','saved','save','heaven','hell','eternal life','everlasting life','condemnation','gospel',
     'grace','faith','believe','whosoever','justified','justification','works','born again','book of life',
     'choose','chooses','chosen','elect','election','predestinated','predestination','foreknow','foreknowledge','called','calling',
-    'tulip','calvinism','arminianism','total depravity','unconditional election','limited atonement','irresistible grace','perseverance of the saints'
+    'tulip','calvinism','arminianism','total depravity','unconditional election','limited atonement','particular redemption','atonement','jesus die','jesus died','christ die','christ died','die for everyone','died for everyone','die for all','died for all','death for all','for every man','ransom for all','tasted death for every man','taste death for every man','saviour of all men','savior of all men','propitiation for the whole world','whole world','irresistible grace','perseverance of the saints'
   ];
   const prophecyTerms = [
     'prophecy','revelation','daniel','antichrist','beast','little horn','man of sin','son of perdition','wicked one',
