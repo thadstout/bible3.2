@@ -33,7 +33,7 @@ EPHESIANS DOCTRINAL LOGIC
   },
   revelation: {
     triggers: [
-      'revelation','prophecy','tribulation','antichrist','beast','mark of the beast','millennium','thousand years','book of life','lake of fire','new heaven','new earth','babylon','seven churches','last days','second coming','satan bound','resurrection','judgment seat','great white throne'
+      'revelation','sixth seal','seal','sun darkened','moon blood','moon darkened','stars fall','earthquake','day of the lord','day of wrath','heaven departed','prophecy','tribulation','antichrist','beast','mark of the beast','millennium','thousand years','book of life','lake of fire','new heaven','new earth','babylon','seven churches','last days','second coming','satan bound','resurrection','judgment seat','great white throne'
     ],
     rules: `
 REVELATION DOCTRINAL LOGIC
@@ -45,6 +45,9 @@ REVELATION DOCTRINAL LOGIC
 6. Book of life passages must be handled carefully. Say only what the searched passages establish, and avoid overstating beyond the text.
 7. Revelation should be interpreted alongside Daniel, Matthew 24, and the prophets when those passages are included in the search results. If they are not present, do not pretend they were searched unless listed.
 8. Distinguish present church instruction, future tribulation/judgment, kingdom reign, final judgment, and new heaven/new earth.
+9. Prophetic event-marker connection rule: when Revelation 6:12-17 appears or the question mentions the sixth seal, intentionally compare shared signs with Matthew 24:29, Mark 13:24-25, Luke 21:25-26, Acts 2:19-20, Joel 2:10, Joel 2:30-31, Joel 3:15, Isaiah 13:10, Isaiah 13:13, Isaiah 34:4, Ezekiel 32:7-8, Haggai 2:6, and Hebrews 12:26-27 when those passages are supplied in the search results.
+10. Treat repeated event markers as legitimate cross-reference evidence: sun darkened/black, moon blood/darkened, stars falling, heavens shaken/rolled/departed, great earthquake/shaking of earth, and day/wrath language. Do not force identity if context distinguishes them, but do not ignore the connection when multiple markers overlap.
+11. For the sixth seal, the app should recognize that Revelation 6:12-17 belongs to the broader prophetic pattern of cosmic disturbance associated with the day of the Lord / coming judgment. The answer should state the connection carefully and cite only supplied passages.
 `
   },
   greek: {

@@ -11,7 +11,13 @@ const synonymMap = {
   commandment: ['commandments','law','statutes','judgments','ordinances'],
   idolatry: ['idol','idols','image','graven','strange','gods'],
   sacrifice: ['offering','altar','blood','atonement','lamb'],
-  prophecy: ['prophet','prophets','vision','day of the lord','messiah'],
+  prophecy: ['prophet','prophets','vision','day of the lord','messiah','sun','moon','stars','earthquake','wrath','shaken','heaven'],
+  seal: ['seals','sixth seal','sun','moon','stars','earthquake','wrath','heaven'],
+  sixth: ['sixth seal','seal','sun','moon','stars','earthquake','wrath','heaven'],
+  earthquake: ['earthquakes','shaken','shake','tremble','sun','moon','stars','wrath'],
+  sun: ['darkened','black','moon','stars','heaven','day of the lord'],
+  moon: ['blood','darkened','sun','stars','heaven','day of the lord'],
+  stars: ['fall','fallen','heaven','sun','moon','shaken'],
   messiah: ['christ','anointed','david','seed','king'],
   covenant: ['promise','promised','oath','seed','abraham'],
   worship: ['worshipped','praise','sing','psalm','sacrifice'],
@@ -180,12 +186,12 @@ function dedupe(passages) {
   return out;
 }
 
-function phraseScore(question, text) {
+function phraseScore(question, text, ref = "") {
   const q = normalize(question);
   const phrases = [];
   const quoted = [...String(question || '').matchAll(/[“"]([^”"]{3,})[”"]/g)].map(m => normalize(m[1]));
   phrases.push(...quoted);
-  const importantPhrases = ['works salvation','saved by works','eternal life','false prophet','false teachers','another gospel','unequally yoked','not of works','communion','lords supper','body of christ','blood of christ','male and female','one flesh','fornication','love one another'];
+  const importantPhrases = ['works salvation','saved by works','eternal life','false prophet','false teachers','another gospel','unequally yoked','not of works','communion','lords supper','body of christ','blood of christ','male and female','one flesh','fornication','love one another','sixth seal','sun darkened','moon became as blood','moon to blood','stars of heaven','great earthquake','day of the lord','day of his wrath','heaven departed'];
   phrases.push(...importantPhrases.filter(p => q.includes(p)));
   let score = 0;
   for (const phrase of phrases) {
@@ -203,7 +209,7 @@ function phraseScore(question, text) {
 
 function scorePassage(p, question, terms, originalWords) {
   const text = normalize(`${p.ref} ${p.text}`);
-  let score = phraseScore(question, text);
+  let score = phraseScore(question, text, p.ref);
 
   for (const word of originalWords) {
     if (text.includes(word)) score += 8;
@@ -223,6 +229,9 @@ function scorePassage(p, question, terms, originalWords) {
   if (/(communion|supper|bread|cup|remembrance|blood|body)/.test(q) && /^(Matthew 26:|Mark 14:|Luke 22:|1 Corinthians 10:|1 Corinthians 11:)/.test(ref)) score += 12;
   if (/(song|sing|music|psalm|hymn)/.test(q) && /^(Ephesians 5:|Colossians 3:|James 5:|1 Corinthians 14:)/.test(ref)) score += 12;
 
+  // Prophetic event-marker boost: connect Revelation 6 sixth seal with parallel sun/moon/stars/earthquake/day-of-the-Lord passages.
+  if (/(sixth seal|seal|sun|moon|stars|earthquake|heaven.*depart|wrath|day of the lord|darkened|blood)/.test(q) && /^(Revelation 6:12|Revelation 6:13|Revelation 6:14|Revelation 6:15|Revelation 6:16|Revelation 6:17|Matthew 24:29|Mark 13:24|Mark 13:25|Luke 21:25|Luke 21:26|Acts 2:19|Acts 2:20|Joel 2:10|Joel 2:30|Joel 2:31|Joel 3:15|Isaiah 13:10|Isaiah 13:13|Isaiah 34:4|Ezekiel 32:7|Ezekiel 32:8|Haggai 2:6|Haggai 2:21|Hebrews 12:26|Hebrews 12:27)/.test(ref)) score += 35;
+
 
   if (/(creation|created|beginning|male|female|marriage|one flesh|gender)/.test(q) && /^(Genesis 1:|Genesis 2:|Malachi 2:)/.test(ref)) score += 12;
   if (/(law|commandment|statute|judgment|ordinance|sabbath|clean|unclean)/.test(q) && /^(Exodus 20:|Leviticus |Deuteronomy 5:|Deuteronomy 6:|Deuteronomy 22:)/.test(ref)) score += 10;
@@ -235,9 +244,14 @@ function scorePassage(p, question, terms, originalWords) {
 
 function searchBible(question, limit = 25) {
   const ref = parseReference(question);
+  let exactMatches = [];
+  const qForRef = normalize(question);
+  const wantsCrossReferences = /(connect|connection|compare|parallel|cross reference|cross-reference|same event|sun|moon|stars|earthquake|heaven|wrath|day of the lord|darkened|blood)/.test(qForRef);
   if (ref) {
-    const exact = exactReferenceResults(ref, limit);
-    if (exact.length) return exact;
+    exactMatches = exactReferenceResults(ref, limit);
+    // For simple reference lookups, return the requested passage. For prophetic/thematic connection questions,
+    // keep the exact passage but continue searching so parallel passages can be included too.
+    if (exactMatches.length && !wantsCrossReferences) return exactMatches;
   }
 
   const originalWords = tokenize(question);
@@ -248,7 +262,7 @@ function searchBible(question, limit = 25) {
 
   const top = scored.slice(0, Math.max(limit, 12));
   const withContext = addNearbyContext(top.slice(0, Math.ceil(limit / 2)), 1);
-  const combined = dedupe([...top, ...withContext]);
+  const combined = dedupe([...exactMatches, ...top, ...withContext]);
 
   const fallbackRefs = new Set([
     'Genesis 1:1','Psalms 119:105','Psalms 119:160','Proverbs 3:5','Proverbs 3:6','Isaiah 8:20','2 Timothy 3:16','2 Timothy 3:17','Hebrews 4:12','John 3:16','John 3:17','John 3:18','Acts 4:12','1 Corinthians 15:3','1 Corinthians 15:4','Ephesians 2:8','Ephesians 2:9','Ephesians 2:10','2 Corinthians 6:14','2 Corinthians 6:15','2 Corinthians 6:16','2 Corinthians 6:17','Romans 16:17','Colossians 4:6'
