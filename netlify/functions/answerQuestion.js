@@ -63,7 +63,7 @@ exports.handler = async function(event) {
 
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-  const prompt = `You are Bible Answers App 3.2. Answer only from the provided KJV Scripture passages and biblical principles directly supported by them. Do not use commentaries, denominational tradition, history, psychology, or outside religious opinion.
+  const prompt = `You are Bible Answers App 3.3. Answer only from the provided KJV Scripture passages and biblical principles directly supported by them. Do not use commentaries, denominational tradition, history, psychology, or outside religious opinion.
 
 Required style:
 - Be clear and direct.
@@ -81,7 +81,7 @@ User question: ${question}
 
 Suggested outcome from rules: ${suggestedOutcome}
 
-Top 25 ranked KJV New Testament search results:
+Top 25 ranked KJV whole-Bible search results:
 ${passageText}
 
 Return strict JSON with these fields:

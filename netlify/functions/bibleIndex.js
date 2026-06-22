@@ -1,10 +1,22 @@
-const ntPassages = require('./ntBooks.js');
+const biblePassages = require('./allBooks.js');
 
 const stopWords = new Set([
   'the','a','an','and','or','but','is','are','was','were','to','of','in','on','for','with','my','me','i','it','that','this','can','should','do','does','be','as','at','from','if','what','about','have','has','had','will','would','could','there','their','they','them','his','her','him','he','she','we','us','you','your','our','not','so','then','than','into','unto','by','am'
 ]);
 
 const synonymMap = {
+
+  creation: ['created','made','heaven','earth','male','female','beginning'],
+  law: ['commandment','statutes','judgments','ordinances','moses'],
+  commandment: ['commandments','law','statutes','judgments','ordinances'],
+  idolatry: ['idol','idols','image','graven','strange','gods'],
+  sacrifice: ['offering','altar','blood','atonement','lamb'],
+  prophecy: ['prophet','prophets','vision','day of the lord','messiah'],
+  messiah: ['christ','anointed','david','seed','king'],
+  covenant: ['promise','promised','oath','seed','abraham'],
+  worship: ['worshipped','praise','sing','psalm','sacrifice'],
+  repentance: ['repent','turn','wicked','evil','forsake'],
+  justice: ['judge','judgment','righteousness','poor','widow','fatherless'],
   salvation: ['saved','save','grace','faith','believe','gospel','justified','justification','redeemed','redemption','eternal','life'],
   saved: ['salvation','save','grace','faith','believe','gospel','justified','justification'],
   works: ['work','deeds','law','righteousness','boast','boasting','merit'],
@@ -36,6 +48,46 @@ const synonymMap = {
 };
 
 const bookAliases = {
+
+  genesis: 'Genesis', gen: 'Genesis', ge: 'Genesis',
+  exodus: 'Exodus', exod: 'Exodus', ex: 'Exodus',
+  leviticus: 'Leviticus', lev: 'Leviticus', le: 'Leviticus',
+  numbers: 'Numbers', num: 'Numbers', nu: 'Numbers',
+  deuteronomy: 'Deuteronomy', deut: 'Deuteronomy', de: 'Deuteronomy',
+  joshua: 'Joshua', josh: 'Joshua', jos: 'Joshua',
+  judges: 'Judges', judg: 'Judges', jdg: 'Judges',
+  ruth: 'Ruth', ru: 'Ruth',
+  '1samuel': '1 Samuel', '1sam': '1 Samuel', '1sa': '1 Samuel', 'firstsamuel': '1 Samuel',
+  '2samuel': '2 Samuel', '2sam': '2 Samuel', '2sa': '2 Samuel', 'secondsamuel': '2 Samuel',
+  '1kings': '1 Kings', '1kgs': '1 Kings', '1ki': '1 Kings', 'firstkings': '1 Kings',
+  '2kings': '2 Kings', '2kgs': '2 Kings', '2ki': '2 Kings', 'secondkings': '2 Kings',
+  '1chronicles': '1 Chronicles', '1chron': '1 Chronicles', '1chr': '1 Chronicles', 'firstchronicles': '1 Chronicles',
+  '2chronicles': '2 Chronicles', '2chron': '2 Chronicles', '2chr': '2 Chronicles', 'secondchronicles': '2 Chronicles',
+  ezra: 'Ezra', ezr: 'Ezra',
+  nehemiah: 'Nehemiah', neh: 'Nehemiah',
+  esther: 'Esther', esth: 'Esther', est: 'Esther',
+  job: 'Job',
+  psalms: 'Psalms', psalm: 'Psalms', psa: 'Psalms', ps: 'Psalms',
+  proverbs: 'Proverbs', prov: 'Proverbs', pro: 'Proverbs',
+  ecclesiastes: 'Ecclesiastes', eccl: 'Ecclesiastes', ecc: 'Ecclesiastes',
+  'songofsolomon': 'Song of Solomon', song: 'Song of Solomon', sos: 'Song of Solomon', canticles: 'Song of Solomon',
+  isaiah: 'Isaiah', isa: 'Isaiah',
+  jeremiah: 'Jeremiah', jer: 'Jeremiah',
+  lamentations: 'Lamentations', lam: 'Lamentations',
+  ezekiel: 'Ezekiel', ezek: 'Ezekiel', eze: 'Ezekiel',
+  daniel: 'Daniel', dan: 'Daniel', da: 'Daniel',
+  hosea: 'Hosea', hos: 'Hosea',
+  joel: 'Joel',
+  amos: 'Amos',
+  obadiah: 'Obadiah', obad: 'Obadiah', ob: 'Obadiah',
+  jonah: 'Jonah', jon: 'Jonah',
+  micah: 'Micah', mic: 'Micah',
+  nahum: 'Nahum', nah: 'Nahum',
+  habakkuk: 'Habakkuk', hab: 'Habakkuk',
+  zephaniah: 'Zephaniah', zeph: 'Zephaniah', zep: 'Zephaniah',
+  haggai: 'Haggai', hag: 'Haggai',
+  zechariah: 'Zechariah', zech: 'Zechariah', zec: 'Zechariah',
+  malachi: 'Malachi', mal: 'Malachi',
   matthew: 'Matthew', matt: 'Matthew', mt: 'Matthew',
   mark: 'Mark', mrk: 'Mark', mk: 'Mark',
   luke: 'Luke', lk: 'Luke',
@@ -95,7 +147,7 @@ function parseReference(question) {
 }
 
 function exactReferenceResults(ref, limit) {
-  let results = ntPassages.filter(p => p.book === ref.book && p.chapter === ref.chapter);
+  let results = biblePassages.filter(p => p.book === ref.book && p.chapter === ref.chapter);
   if (ref.verseStart) {
     const end = ref.verseEnd || ref.verseStart;
     results = results.filter(p => p.verse >= ref.verseStart && p.verse <= end);
@@ -111,7 +163,7 @@ function addNearbyContext(results, radius = 1) {
       wanted.add(`${p.book}|${p.chapter}|${v}`);
     }
   }
-  const context = ntPassages.filter(p => wanted.has(`${p.book}|${p.chapter}|${p.verse}`));
+  const context = biblePassages.filter(p => wanted.has(`${p.book}|${p.chapter}|${p.verse}`));
   return dedupe(context);
 }
 
@@ -139,6 +191,13 @@ function phraseScore(question, text) {
   for (const phrase of phrases) {
     if (phrase && text.includes(phrase)) score += 18;
   }
+
+  if (/(creation|created|beginning|male|female|marriage|one flesh|gender)/.test(q) && /^(Genesis 1:|Genesis 2:|Malachi 2:)/.test(ref)) score += 12;
+  if (/(law|commandment|statute|judgment|ordinance|sabbath|clean|unclean)/.test(q) && /^(Exodus 20:|Leviticus |Deuteronomy 5:|Deuteronomy 6:|Deuteronomy 22:)/.test(ref)) score += 10;
+  if (/(wisdom|wise|fool|anger|money|tongue|speech|friend|counsel)/.test(q) && /^(Psalms |Proverbs |Ecclesiastes )/.test(ref)) score += 10;
+  if (/(messiah|christ|cross|suffering|resurrection|virgin|king|david|seed)/.test(q) && /^(Genesis 3:15|Genesis 12:|2 Samuel 7:|Psalm 2:|Psalms 2:|Psalms 16:|Psalms 22:|Psalms 110:|Isaiah 7:|Isaiah 9:|Isaiah 53:|Micah 5:)/.test(ref)) score += 12;
+  if (/(idolatry|idol|false god|worship)/.test(q) && /^(Exodus 20:|Deuteronomy 6:|Isaiah 44:|Jeremiah 10:)/.test(ref)) score += 12;
+
   return score;
 }
 
@@ -164,6 +223,13 @@ function scorePassage(p, question, terms, originalWords) {
   if (/(communion|supper|bread|cup|remembrance|blood|body)/.test(q) && /^(Matthew 26:|Mark 14:|Luke 22:|1 Corinthians 10:|1 Corinthians 11:)/.test(ref)) score += 12;
   if (/(song|sing|music|psalm|hymn)/.test(q) && /^(Ephesians 5:|Colossians 3:|James 5:|1 Corinthians 14:)/.test(ref)) score += 12;
 
+
+  if (/(creation|created|beginning|male|female|marriage|one flesh|gender)/.test(q) && /^(Genesis 1:|Genesis 2:|Malachi 2:)/.test(ref)) score += 12;
+  if (/(law|commandment|statute|judgment|ordinance|sabbath|clean|unclean)/.test(q) && /^(Exodus 20:|Leviticus |Deuteronomy 5:|Deuteronomy 6:|Deuteronomy 22:)/.test(ref)) score += 10;
+  if (/(wisdom|wise|fool|anger|money|tongue|speech|friend|counsel)/.test(q) && /^(Psalms |Proverbs |Ecclesiastes )/.test(ref)) score += 10;
+  if (/(messiah|christ|cross|suffering|resurrection|virgin|king|david|seed)/.test(q) && /^(Genesis 3:15|Genesis 12:|2 Samuel 7:|Psalm 2:|Psalms 2:|Psalms 16:|Psalms 22:|Psalms 110:|Isaiah 7:|Isaiah 9:|Isaiah 53:|Micah 5:)/.test(ref)) score += 12;
+  if (/(idolatry|idol|false god|worship)/.test(q) && /^(Exodus 20:|Deuteronomy 6:|Isaiah 44:|Jeremiah 10:)/.test(ref)) score += 12;
+
   return score;
 }
 
@@ -176,7 +242,7 @@ function searchBible(question, limit = 25) {
 
   const originalWords = tokenize(question);
   const terms = expandTerms(originalWords);
-  const scored = ntPassages.map(p => ({ ...p, score: scorePassage(p, question, terms, originalWords) }))
+  const scored = biblePassages.map(p => ({ ...p, score: scorePassage(p, question, terms, originalWords) }))
     .filter(p => p.score > 0)
     .sort((a, b) => b.score - a.score || a.book.localeCompare(b.book) || a.chapter - b.chapter || a.verse - b.verse);
 
@@ -185,10 +251,10 @@ function searchBible(question, limit = 25) {
   const combined = dedupe([...top, ...withContext]);
 
   const fallbackRefs = new Set([
-    '2 Timothy 3:16','2 Timothy 3:17','Hebrews 4:12','John 3:16','John 3:17','John 3:18','Acts 4:12','1 Corinthians 15:3','1 Corinthians 15:4','Ephesians 2:8','Ephesians 2:9','Ephesians 2:10','2 Corinthians 6:14','2 Corinthians 6:15','2 Corinthians 6:16','2 Corinthians 6:17','Romans 16:17','Colossians 4:6'
+    'Genesis 1:1','Psalms 119:105','Psalms 119:160','Proverbs 3:5','Proverbs 3:6','Isaiah 8:20','2 Timothy 3:16','2 Timothy 3:17','Hebrews 4:12','John 3:16','John 3:17','John 3:18','Acts 4:12','1 Corinthians 15:3','1 Corinthians 15:4','Ephesians 2:8','Ephesians 2:9','Ephesians 2:10','2 Corinthians 6:14','2 Corinthians 6:15','2 Corinthians 6:16','2 Corinthians 6:17','Romans 16:17','Colossians 4:6'
   ]);
-  const fallback = ntPassages.filter(p => fallbackRefs.has(p.ref));
+  const fallback = biblePassages.filter(p => fallbackRefs.has(p.ref));
   return (combined.length ? combined : fallback).slice(0, limit).map(({ score, ...p }) => p);
 }
 
-module.exports = { passages: ntPassages, searchBible, tokenize, expandTerms, parseReference };
+module.exports = { passages: biblePassages, searchBible, tokenize, expandTerms, parseReference };
