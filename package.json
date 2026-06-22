@@ -1,0 +1,14 @@
+{
+  "name": "bible-answers-3-1",
+  "version": "3.1.0",
+  "description": "Bible Answers App 3.1 - KJV Scripture-restricted Netlify app",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'Static site ready'",
+    "start": "netlify dev"
+  },
+  "dependencies": {
+    "openai": "^4.104.0"
+  },
+  "devDependencies": {}
+}

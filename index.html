@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bible Answers 3.1</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Bible Answers App • Version 3.1</p>
+        <h1>Ask a Bible question.</h1>
+        <p class="subtitle">Answers are restricted to Scripture, with KJV support passages and a clear conclusion.</p>
+      </div>
+      <div class="status-card">
+        <strong>Health</strong>
+        <span id="healthText">Checking...</span>
+      </div>
+    </section>
+
+    <section class="question-card">
+      <label for="question">Your question</label>
+      <textarea id="question" rows="5" placeholder="Example: Can I go to a church that teaches works salvation?"></textarea>
+      <div class="actions">
+        <button id="askButton">Ask Bible App</button>
+        <button id="clearButton" class="secondary">Clear</button>
+      </div>
+      <p class="small-note">This app is for Bible guidance. It does not give legal, medical, emergency, or counseling advice.</p>
+    </section>
+
+    <section id="answerPanel" class="answer-card hidden">
+      <div class="answer-header">
+        <h2>Answer</h2>
+        <span id="outcomeBadge" class="badge">Waiting</span>
+      </div>
+      <div id="answerText" class="answer-text"></div>
+      <details id="showWorkBox">
+        <summary>Show your work</summary>
+        <div id="workText" class="work-text"></div>
+      </details>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
