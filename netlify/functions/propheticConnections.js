@@ -4,7 +4,7 @@ const PROPHETIC_CONNECTIONS = [
     id: 'antichrist_end_times_ruler_actions',
     title: 'Antichrist / beast / little horn / man of sin action map',
     triggers: [
-      'antichrist','what does the antichrist do','end times ruler','man of sin','son of perdition','wicked one','wicked','beast','mark of the beast','image of the beast','little horn','prince that shall come','abomination of desolation','false prophet','buy or sell','right hand','forehead','war with the saints','overcome the saints','wear out the saints','beheaded'
+      'antichrist','what does the antichrist do','end times ruler','man of sin','son of perdition','wicked one','beast','mark of the beast','image of the beast','little horn','prince that shall come','abomination of desolation','false prophet','buy or sell','right hand','forehead','war with the saints','overcome the saints','wear out the saints','beheaded'
     ],
     markers: [
       'denies the Father and the Son / spirit of antichrist language',
@@ -78,11 +78,24 @@ function normalize(str) {
   return String(str || '').toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9:\-\s]/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
-function triggeredConnections(question, passages = []) {
+function isProphecyQuestion(question) {
   const q = normalize(question);
-  const passageHaystack = passages.map(p => `${p.ref || ''} ${p.text || ''}`).join(' ');
-  const haystack = normalize(`${q} ${passageHaystack}`);
-  return PROPHETIC_CONNECTIONS.filter(conn => conn.triggers.some(t => haystack.includes(normalize(t))));
+  const prophecyTerms = [
+    'prophecy','revelation','daniel','antichrist','beast','little horn','man of sin','son of perdition','wicked one',
+    'mark of the beast','image of the beast','abomination of desolation','false prophet','sixth seal','seal','trumpet',
+    'vial','bowl','tribulation','day of the lord','wrath of the lamb','sun darkened','moon blood','stars fall',
+    '42 months','forty two months','1260','time times','half a time','war with the saints','ten horns','millennium'
+  ];
+  return prophecyTerms.some(t => q.includes(normalize(t)));
+}
+
+function triggeredConnections(question, passages = []) {
+  // Prophetic helpers must be triggered by the question itself, not by incidental
+  // words in preliminary search results. This keeps prophecy from hijacking
+  // salvation or definition questions.
+  if (!isProphecyQuestion(question)) return [];
+  const q = normalize(question);
+  return PROPHETIC_CONNECTIONS.filter(conn => conn.triggers.some(t => q.includes(normalize(t))));
 }
 
 function getConnectionPassages(question, currentPassages, allPassages, limit = 25) {
@@ -114,4 +127,4 @@ function getConnectionInstructions(question, passages = []) {
   }).join('\n\n');
 }
 
-module.exports = { PROPHETIC_CONNECTIONS, triggeredConnections, getConnectionPassages, getConnectionBoostRefs, getConnectionInstructions };
+module.exports = { PROPHETIC_CONNECTIONS, isProphecyQuestion, triggeredConnections, getConnectionPassages, getConnectionBoostRefs, getConnectionInstructions };

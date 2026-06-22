@@ -12,8 +12,9 @@ const RELATIONSHIPS = [
   {
     id: 'end_times_opponent_cluster',
     title: 'End-times opponent textual relationship cluster',
+    domain: 'prophecy',
     triggers: [
-      'antichrist','beast','little horn','man of sin','son of perdition','wicked one','wicked','prince that shall come','abomination of desolation','false prophet','mark of the beast','image of the beast','buy','sell','right hand','forehead','ten horns','great words','blasphemy','blasphemies','war with the saints','wear out the saints','overcome the saints','42 months','forty two months','time times half','time times and half','half a time','1260 days','thousand two hundred and threescore'
+      'antichrist','beast','little horn','man of sin','son of perdition','wicked one','prince that shall come','abomination of desolation','false prophet','mark of the beast','image of the beast','buy or sell','right hand','forehead','ten horns','great words','blasphemy','blasphemies','war with the saints','wear out the saints','overcome the saints','42 months','forty two months','time times half','time times and half','half a time','1260 days','thousand two hundred and threescore'
     ],
     markers: [
       'ruler/opponent title language: antichrist, little horn, beast, man of sin, son of perdition, wicked one',
@@ -39,6 +40,7 @@ const RELATIONSHIPS = [
   {
     id: 'abomination_apostasy_deception_cluster',
     title: 'Apostasy / abomination / deception event cluster',
+    domain: 'prophecy',
     triggers: ['falling away','apostasy','depart from the faith','abomination','abomination of desolation','temple of god','deceive','deception','lying wonders','strong delusion','false christs','false prophets'],
     markers: [
       'departure/falling away language',
@@ -58,6 +60,7 @@ const RELATIONSHIPS = [
   {
     id: 'cosmic_day_of_lord_cluster',
     title: 'Cosmic disturbance / day of the Lord relationship cluster',
+    domain: 'prophecy',
     triggers: ['sixth seal','sun darkened','moon blood','moon darkened','stars fall','stars of heaven','earthquake','heaven departed','heavens shaken','day of the lord','wrath of the lamb','great day of his wrath'],
     markers: [
       'sun darkened or blackened',
@@ -76,7 +79,8 @@ const RELATIONSHIPS = [
   {
     id: 'salvation_whole_counsel_cluster',
     title: 'Salvation whole-counsel relationship cluster',
-    triggers: ['salvation','saved','choose','chooses','chosen','elect','election','predestinated','predestination','foreknow','foreknowledge','called','calling','heaven','hell','eternal life','everlasting life','condemnation','whosoever','believe','faith','grace','works','book of life'],
+    domain: 'salvation',
+    triggers: ['salvation','saved','save','choose','chooses','chosen','elect','election','predestinated','predestination','foreknow','foreknowledge','called','calling','heaven','hell','eternal life','everlasting life','condemnation','whosoever','believe','faith','grace','works','book of life','tulip','calvinism','arminianism','total depravity','unconditional election','limited atonement','irresistible grace','perseverance of the saints'],
     markers: [
       'God’s saving desire and provision',
       'human responsibility to believe/call/come',
@@ -103,11 +107,46 @@ function normalize(str) {
   return String(str || '').toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9:\-\s]/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
-function getTriggeredRelationships(question, passages = []) {
+function detectQuestionDomain(question) {
   const q = normalize(question);
-  const passageText = normalize(passages.map(p => `${p.ref || ''} ${p.text || ''}`).join(' '));
-  const haystack = `${q} ${passageText}`;
-  return RELATIONSHIPS.filter(rel => rel.triggers.some(t => haystack.includes(normalize(t))));
+  const salvationTerms = [
+    'salvation','saved','save','heaven','hell','eternal life','everlasting life','condemnation','gospel',
+    'grace','faith','believe','whosoever','justified','justification','works','born again','book of life',
+    'choose','chooses','chosen','elect','election','predestinated','predestination','foreknow','foreknowledge','called','calling',
+    'tulip','calvinism','arminianism','total depravity','unconditional election','limited atonement','irresistible grace','perseverance of the saints'
+  ];
+  const prophecyTerms = [
+    'prophecy','revelation','daniel','antichrist','beast','little horn','man of sin','son of perdition','wicked one',
+    'mark of the beast','image of the beast','abomination of desolation','false prophet','sixth seal','seal','trumpet',
+    'vial','bowl','tribulation','day of the lord','wrath of the lamb','sun darkened','moon blood','stars fall',
+    '42 months','forty two months','1260','time times','half a time','war with the saints','ten horns','millennium'
+  ];
+
+  const salvationHit = salvationTerms.some(t => q.includes(normalize(t)));
+  const prophecyHit = prophecyTerms.some(t => q.includes(normalize(t)));
+
+  if (salvationHit && !prophecyHit) return 'salvation';
+  if (prophecyHit && !salvationHit) return 'prophecy';
+  if (salvationHit && prophecyHit) return 'mixed';
+  return 'general';
+}
+
+function relationshipAllowedForDomain(rel, domain) {
+  if (domain === 'mixed') return true;
+  if (domain === 'general') return false;
+  return rel.domain === domain;
+}
+
+function getTriggeredRelationships(question, passages = []) {
+  // Important router rule: relationship clusters are triggered by the user's question,
+  // not by accidental words found in preliminary search results. This prevents
+  // prophecy clusters from overriding salvation questions and vice versa.
+  const q = normalize(question);
+  const domain = detectQuestionDomain(question);
+  return RELATIONSHIPS.filter(rel => {
+    if (!relationshipAllowedForDomain(rel, domain)) return false;
+    return rel.triggers.some(t => q.includes(normalize(t)));
+  });
 }
 
 function getRelationshipRefs(question, passages = []) {
@@ -142,6 +181,7 @@ function getRelationshipInstructions(question, passages = []) {
 module.exports = {
   RELATIONSHIPS,
   getTriggeredRelationships,
+  detectQuestionDomain,
   getRelationshipRefs,
   getRelationshipPassages,
   getRelationshipInstructions

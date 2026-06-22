@@ -110,6 +110,7 @@ Required answer style:
 - For prophecy questions, actively compare repeated event markers across supplied passages.
 - Treat repeated rare identifiers as cross-reference evidence, not as commentary.
 - The Biblical Relationship Engine is only a passage-gathering helper. It is not an authority and must not force conclusions.
+- Relationship clusters must be subordinate to question intent. Prophecy clusters must not override salvation, gospel, election, or definition questions unless the user question itself asks about prophecy/end-times subjects.
 - When relationship clusters are supplied, compare the repeated textual markers and state the strength/limits of the connection from the supplied verses only.
 - For Daniel/Revelation questions, compare shared identifiers such as little horn/beast, ten horns, great words/blasphemy, war with the saints, overcoming/wearing out saints, time-times-half-a-time, 42 months, and 1260 days.
 - For antichrist questions, do not stop with only verses containing the exact word antichrist. Use supplied passages to compare the title/action cluster: antichrist, little horn, beast, man of sin, son of perdition, wicked one, mark/image of the beast, war with the saints, buying/selling control, and final judgment.

@@ -1,7 +1,7 @@
 const DOCTRINAL_LOGIC = {
   romans: {
     triggers: [
-      'romans','justification','justify','faith','works','law','grace','sin','flesh','spirit','israel','gentile','election','predestination','all men','whosoever','saved by works','lose salvation','book of life'
+      'romans','justification','justify','faith','works','law','grace','sin','flesh','spirit','israel','gentile','election','predestination','all men','whosoever','saved by works','lose salvation','book of life','tulip','calvinism','arminianism','total depravity','unconditional election','limited atonement','irresistible grace','perseverance of the saints'
     ],
     rules: `
 ROMANS DOCTRINAL LOGIC
@@ -71,12 +71,12 @@ CONTROLLED GREEK/TR NOTES
 };
 
 function getDoctrinalLogic(question, passages) {
+  // Doctrine helpers are routed from the user's question only. Do not let
+  // accidental preliminary search results trigger unrelated book logic.
   const q = String(question || '').toLowerCase();
-  const refs = (passages || []).map(p => String(p.ref || '').toLowerCase()).join(' ');
-  const haystack = `${q} ${refs}`;
   const selected = [];
   for (const [key, item] of Object.entries(DOCTRINAL_LOGIC)) {
-    if (item.triggers.some(t => haystack.includes(t))) {
+    if (item.triggers.some(t => q.includes(String(t).toLowerCase()))) {
       selected.push(item.rules.trim());
     }
   }
