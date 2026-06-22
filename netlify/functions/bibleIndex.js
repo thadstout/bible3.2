@@ -31,8 +31,22 @@ const synonymMap = {
   worship: ['worshipped','praise','sing','psalm','sacrifice'],
   repentance: ['repent','turn','wicked','evil','forsake'],
   justice: ['judge','judgment','righteousness','poor','widow','fatherless'],
-  salvation: ['saved','save','grace','faith','believe','gospel','justified','justification','redeemed','redemption','eternal','life'],
-  saved: ['salvation','save','grace','faith','believe','gospel','justified','justification'],
+  salvation: ['saved','save','grace','faith','believe','believed','gospel','justified','justification','redeemed','redemption','eternal','everlasting','life','born again','whosoever','condemnation','perish','election','chosen','predestinated','called'],
+  saved: ['salvation','save','grace','faith','believe','gospel','justified','justification','eternal life','not of works','gift of god'],
+  heaven: ['eternal life','everlasting life','saved','salvation','kingdom of god','kingdom of heaven','believe','grace','faith'],
+  hell: ['condemnation','damnation','judgment','wrath','perish','lake of fire','second death','unbelief'],
+  choose: ['chosen','elect','election','predestinated','foreknow','called','purpose','in christ','according to'],
+  chooses: ['chosen','elect','election','predestinated','foreknow','called','purpose','in christ','according to'],
+  chosen: ['choose','elect','election','predestinated','foreknow','called','purpose','in christ','to adoption','holy and without blame'],
+  elect: ['chosen','election','foreknowledge','called','predestinated','according to','obedience'],
+  election: ['elect','chosen','foreknowledge','called','predestinated','purpose'],
+  predestinated: ['predestinate','predestination','chosen','adoption','conformed','called','purpose'],
+  predestination: ['predestinated','chosen','adoption','conformed','called','purpose'],
+  foreknow: ['foreknowledge','foreknew','predestinated','called','elect'],
+  foreknowledge: ['foreknow','foreknew','elect','predestinated','called'],
+  whosoever: ['believeth','believe','saved','call upon','come','will','take water of life'],
+  believe: ['believeth','faith','trusted','receive','gospel','eternal life','saved','not condemned'],
+  condemnation: ['condemned','damnation','judgment','wrath','unbelief','believeth not','evil deeds'],
   works: ['work','deeds','law','righteousness','boast','boasting','merit'],
   baptism: ['baptize','baptized','baptizing','water'],
   tongues: ['tongue','languages','interpretation','prophesy','spirit'],
@@ -240,6 +254,12 @@ function scorePassage(p, question, terms, originalWords) {
   if (/(marry|marriage|dating|fornication|adultery|sexual|body|homosexual|gender)/.test(q) && /^(Matthew 19:|Mark 10:|Romans 1:|1 Corinthians 6:|1 Corinthians 7:|Ephesians 5:|Hebrews 13:)/.test(ref)) score += 12;
   if (/(communion|supper|bread|cup|remembrance|blood|body)/.test(q) && /^(Matthew 26:|Mark 14:|Luke 22:|1 Corinthians 10:|1 Corinthians 11:)/.test(ref)) score += 12;
   if (/(song|sing|music|psalm|hymn)/.test(q) && /^(Ephesians 5:|Colossians 3:|James 5:|1 Corinthians 14:)/.test(ref)) score += 12;
+
+
+  // Salvation/election vocabulary discipline boost: gather balancing passages before answering.
+  if (/(choose|chooses|chosen|elect|election|predestinat|foreknow|foreknowledge|called|calling|heaven|hell|salvation|saved|eternal life|everlasting life|condemn|condemnation|grace|faith|believe|whosoever|works|gospel|justif|book of life)/.test(q) && /^(John 1:12|John 1:13|John 3:14|John 3:15|John 3:16|John 3:17|John 3:18|John 3:19|John 3:36|John 5:24|John 6:37|John 6:40|John 6:47|John 10:27|John 10:28|John 10:29|John 12:32|Acts 2:21|Acts 4:12|Acts 10:34|Acts 10:35|Acts 13:38|Acts 13:39|Acts 16:30|Acts 16:31|Acts 17:30|Acts 17:31|Romans 2:6|Romans 2:7|Romans 2:8|Romans 3:21|Romans 3:22|Romans 3:23|Romans 3:24|Romans 3:28|Romans 4:3|Romans 4:5|Romans 5:1|Romans 5:6|Romans 5:8|Romans 5:12|Romans 5:18|Romans 6:23|Romans 8:28|Romans 8:29|Romans 8:30|Romans 8:31|Romans 8:32|Romans 8:33|Romans 8:34|Romans 8:35|Romans 8:38|Romans 8:39|Romans 9:11|Romans 9:15|Romans 9:16|Romans 9:18|Romans 10:9|Romans 10:10|Romans 10:11|Romans 10:12|Romans 10:13|Romans 10:14|Romans 10:17|Romans 11:5|Romans 11:6|1 Corinthians 15:1|1 Corinthians 15:2|1 Corinthians 15:3|1 Corinthians 15:4|2 Corinthians 5:14|2 Corinthians 5:15|2 Corinthians 5:19|Galatians 2:16|Galatians 3:22|Galatians 3:26|Ephesians 1:4|Ephesians 1:5|Ephesians 1:6|Ephesians 1:7|Ephesians 1:11|Ephesians 1:12|Ephesians 1:13|Ephesians 1:14|Ephesians 2:8|Ephesians 2:9|Ephesians 2:10|1 Timothy 2:3|1 Timothy 2:4|1 Timothy 2:5|1 Timothy 2:6|Titus 3:5|Titus 3:7|Hebrews 2:9|Hebrews 7:25|2 Peter 3:9|1 John 2:2|1 John 5:11|1 John 5:12|1 John 5:13|Revelation 20:12|Revelation 20:15|Revelation 22:17|Ezekiel 18:23|Ezekiel 18:32|Ezekiel 33:11|Isaiah 55:1|Isaiah 55:6|Isaiah 55:7)/.test(ref)) score += 34;
+
+  if (/(choose|chooses|chosen|elect|election|predestinat|foreknow|foreknowledge|called|calling)/.test(q) && /^(Ephesians 1:4|Ephesians 1:5|Ephesians 1:11|Ephesians 1:13|Romans 8:28|Romans 8:29|Romans 8:30|Romans 9:11|Romans 9:15|Romans 9:16|Romans 9:18|Romans 10:9|Romans 10:10|Romans 10:11|Romans 10:12|Romans 10:13|Romans 10:14|1 Peter 1:2|2 Peter 3:9|1 Timothy 2:4|John 3:16|John 3:18|John 12:32|Revelation 22:17)/.test(ref)) score += 36;
 
   // Prophetic event-marker boost: connect Revelation 6 sixth seal with parallel sun/moon/stars/earthquake/day-of-the-Lord passages.
   if (/(sixth seal|seal|sun|moon|stars|earthquake|heaven.*depart|wrath|day of the lord|darkened|blood)/.test(q) && /^(Revelation 6:12|Revelation 6:13|Revelation 6:14|Revelation 6:15|Revelation 6:16|Revelation 6:17|Matthew 24:29|Mark 13:24|Mark 13:25|Luke 21:25|Luke 21:26|Acts 2:19|Acts 2:20|Joel 2:10|Joel 2:30|Joel 2:31|Joel 3:15|Isaiah 13:10|Isaiah 13:13|Isaiah 34:4|Ezekiel 32:7|Ezekiel 32:8|Haggai 2:6|Haggai 2:21|Hebrews 12:26|Hebrews 12:27)/.test(ref)) score += 35;

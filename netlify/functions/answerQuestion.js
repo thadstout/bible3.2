@@ -3,6 +3,7 @@ const { searchBible } = require('./bibleIndex.js');
 const { LOGIC_RULES } = require('./logicRules.js');
 const { getDoctrinalLogic } = require('./doctrinalLogic.js');
 const { getConnectionInstructions } = require('./propheticConnections.js');
+const { getStudyProtocol } = require('./studyProtocol.js');
 
 function json(statusCode, body) {
   return {
@@ -57,6 +58,7 @@ exports.handler = async function(event) {
   const suggestedOutcome = classifyQuestion(question);
   const doctrinalLogic = getDoctrinalLogic(question, passages);
   const connectionInstructions = getConnectionInstructions(question, passages);
+  const studyProtocol = getStudyProtocol(question);
 
   if (suggestedOutcome === 'Outside scope') {
     return json(200, {
@@ -68,7 +70,7 @@ exports.handler = async function(event) {
 
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-  const prompt = `You are Bible Answers App 3.8 Antichrist Search Patch. You must answer under the following interpretive rules and source restraints.
+  const prompt = `You are Bible Answers App 3.9 Interpretation Discipline Patch. You must answer under the following interpretive rules and source restraints.
 
 ${LOGIC_RULES}
 
@@ -77,6 +79,9 @@ ${doctrinalLogic}
 
 Additional prophetic connection helper triggered by this question/search:
 ${connectionInstructions}
+
+Bible-only study protocol triggered by this question:
+${studyProtocol}
 
 Required answer style:
 - Be clear and direct.
@@ -92,6 +97,8 @@ Required answer style:
 - Treat repeated rare identifiers as cross-reference evidence, not as commentary.
 - For Daniel/Revelation questions, compare shared identifiers such as little horn/beast, ten horns, great words/blasphemy, war with the saints, overcoming/wearing out saints, time-times-half-a-time, 42 months, and 1260 days.
 - For antichrist questions, do not stop with only verses containing the exact word antichrist. Use supplied passages to compare the title/action cluster: antichrist, little horn, beast, man of sin, son of perdition, wicked one, mark/image of the beast, war with the saints, buying/selling control, and final judgment.
+- For salvation/election/predestination questions, do not answer from isolated vocabulary. Compare the supplied passages across the full salvation subject before concluding: God's saving desire, man's responsibility, grace/faith/works, election/predestination/calling, condemnation/judgment, security, and gospel invitation.
+- For terms such as chosen, predestinated, called, elect, all, world, whosoever, believe, and works, identify the object and context of the term before drawing a conclusion.
 - State these as shared biblical identifiers and actions found in the supplied passages, not as internet/commentary claims.
 - For sixth seal questions, compare sun, moon, stars, earthquake, heaven shaken, and day/wrath language.
 
@@ -104,7 +111,7 @@ Suggested outcome from simple rules: ${suggestedOutcome}
 Top 25 ranked KJV whole-Bible search results:
 ${passageText}
 
-Before answering, apply the general rules first, then the doctrinal logic only if it helps interpret the supplied passages. Do not mention Greek unless one of the approved Greek notes is directly relevant and helpful.
+Before answering, apply the general rules first, then the Bible-only study protocol. Use doctrinal logic only as a search/comparison helper, not as an authority over the supplied passages. Do not mention Greek unless one of the approved Greek notes is directly relevant and helpful.
 
 Return strict JSON with these fields:
 {
