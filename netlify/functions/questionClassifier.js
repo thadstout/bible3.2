@@ -38,13 +38,38 @@ const CLASSIFIERS = [
       'Romans 1:24','Romans 1:25','Romans 1:26','Romans 1:27','Romans 1:28','Romans 1:32',
       '1 Corinthians 6:9','1 Corinthians 6:10','1 Corinthians 6:11','1 Corinthians 6:18','1 Corinthians 6:19','1 Corinthians 6:20',
       '2 Corinthians 6:14','2 Corinthians 6:15','2 Corinthians 6:16','2 Corinthians 6:17','2 Corinthians 6:18',
-      'Ephesians 5:3','Ephesians 5:7','Ephesians 5:8','Ephesians 5:11',
+      'Ephesians 5:3','Ephesians 5:4','Ephesians 5:5','Ephesians 5:6','Ephesians 5:7','Ephesians 5:8','Ephesians 5:9','Ephesians 5:10','Ephesians 5:11','Ephesians 5:12','Ephesians 5:13','Ephesians 5:14','Ephesians 5:15','Ephesians 5:16',
       '1 Corinthians 10:20','1 Corinthians 10:21','1 Corinthians 10:23','1 Corinthians 10:31',
       '2 John 1:9','2 John 1:10','2 John 1:11',
       'Amos 3:3','Psalm 1:1','1 Thessalonians 5:22',
       'Ephesians 4:15','Colossians 4:6','Jude 1:22','Jude 1:23'
     ],
-    instruction: 'Classify as participation/separation when the user asks whether to attend, join, celebrate, support, partner with, or show love by presence at an event. Search and weigh participation/fellowship/separation passages before general love/kindness passages. Love remains required, but love must be governed by truth and must not be used to justify fellowship with or celebration of sin. Do not answer merely from kindness/mercy verses if the question asks about attendance or participation.'
+    instruction: `Classify as participation/separation when the user asks whether to attend, join, celebrate, support, partner with, or show love by presence at an event. Search and weigh participation/fellowship/separation passages before general love/kindness passages. Love remains required, but love must be governed by truth and must not be used to justify fellowship with, partaking in, approving, or celebrating sin. For sexual-immorality participation questions, treat Ephesians 5:3-16 as direct-priority context: the passage names fornication/uncleanness, says be not partakers with them, commands believers to walk as children of light, prove what is acceptable unto the Lord, and have no fellowship with the unfruitful works of darkness. Do not answer merely from kindness/mercy verses if the question asks about attendance or participation. Do not conclude 'Scripture does not directly prohibit' when supplied direct passages establish non-participation/fellowship with works of darkness.`
+  },
+
+  {
+    id: 'creation_order_identity',
+    title: 'Creation order / male-female identity question',
+    priority: 88,
+    triggers: [
+      'trans', 'transgender', 'gender identity', 'gender dysphoria', 'nonbinary', 'non-binary',
+      'change gender', 'change sex', 'born a boy', 'born a girl', 'identify as', 'identifies as',
+      'male and female', 'man and woman', 'woman trapped', 'man trapped', 'pronouns', 'call him her', 'call her him'
+    ],
+    strongPairs: [
+      ['trans', 'lifestyle'], ['transgender', 'lifestyle'], ['trans', 'wrong'], ['transgender', 'wrong'],
+      ['trans', 'condemn'], ['transgender', 'condemn'], ['gender', 'identity'], ['male', 'female']
+    ],
+    primaryIssue: 'The primary issue is not whether Scripture uses a modern label. The primary issue is what Scripture establishes about God creating mankind male and female, and whether a person should reject, alter, or present contrary to that God-created distinction.',
+    refs: [
+      'Genesis 1:26','Genesis 1:27','Genesis 5:1','Genesis 5:2',
+      'Matthew 19:4','Matthew 19:5','Matthew 19:6','Mark 10:6','Mark 10:7','Mark 10:8','Mark 10:9',
+      'Deuteronomy 22:5',
+      '1 Corinthians 6:19','1 Corinthians 6:20',
+      'Romans 1:24','Romans 1:25','Romans 1:26','Romans 1:27',
+      'Psalm 139:13','Psalm 139:14','Isaiah 45:9','Isaiah 45:10','Isaiah 45:11','Isaiah 45:12'
+    ],
+    instruction: 'Classify as creation order / male-female identity when a question uses modern terms such as transgender, trans, gender identity, changing sex/gender, pronouns tied to sex, or rejecting/presenting contrary to biological sex. Do not answer merely that Scripture does not mention the modern term. First gather creation-order passages about God making mankind male and female. Treat Deuteronomy 22:5 as a supporting passage about maintaining male/female distinction, not as the only or primary text. Consider body-stewardship passages such as 1 Corinthians 6:19-20 when supplied. Answer from what the supplied passages establish, and distinguish the absence of a modern word from the presence of biblical doctrine.'
   },
   {
     id: 'salvation_definition',
